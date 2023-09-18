@@ -27,7 +27,8 @@
 - Initial 5 bp or so had more variable base frequncies, The very end of reads had slightly lower @-score
 - Based on this we set up an analysis to trim the reads, using 'fastq' program
 - bash script run  'fast.sh'
-
+- looked at html files produced by 'fastq' and compared pre- and post-trimming -- things looked good!
+- We ended the day setting up our read mapping of the trimmed and cleaned read using 'tmux'
 
 * [Entry 3: 2023-XX-XX](#id-section3)
 
