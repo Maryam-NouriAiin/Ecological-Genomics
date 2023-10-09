@@ -1,0 +1,534 @@
+Last login: Sun Oct  1 21:15:38 on ttys000
+maryamnouri-aiin@ip0af521ee ~ % ssh mnouriai@ecogen.uvm.edu
+mnouriai@ecogen.uvm.edu's password: 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+                        RHEL 9
+                        ecogen.uvm.edu 
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+Last login: Sun Oct  1 15:09:44 2023 from 10.245.33.238
+[mnouriai@ecogen ~]$ cd ~/myscripts/
+[mnouriai@ecogen myscripts]$ vim pcANGSD_selection.sh
+[mnouriai@ecogen myscripts]$ bash pcANGSD_selection.sh
+PCAngsd v1.11
+Jonas Meisner and Anders Albrechtsen.
+Using 1 thread(s).
+
+Parsing Beagle file.
+Loaded 593856 sites and 95 individuals.
+Estimating minor allele frequencies.
+EM (MAF) converged at iteration: 15
+Number of sites after MAF filtering (0.05): 461582
+
+Estimating covariance matrix.
+Using 2 principal components (manually selected).
+Individual allele frequencies estimated (1).
+Individual allele frequencies estimated (2). RMSE=0.0033258713267525306
+Individual allele frequencies estimated (3). RMSE=0.0020800572566235897
+Individual allele frequencies estimated (4). RMSE=0.0014032013210660667
+Individual allele frequencies estimated (5). RMSE=0.0009814076768941478
+Individual allele frequencies estimated (6). RMSE=0.0007050324818902354
+Individual allele frequencies estimated (7). RMSE=0.0005200670268383871
+Individual allele frequencies estimated (8). RMSE=0.00039329061536621623
+Individual allele frequencies estimated (9). RMSE=0.00030280304684348583
+Individual allele frequencies estimated (10). RMSE=0.00023904602368952484
+Individual allele frequencies estimated (11). RMSE=0.00019237144013847752
+Individual allele frequencies estimated (12). RMSE=0.00015721660909322768
+Individual allele frequencies estimated (13). RMSE=0.00013112057980962393
+Individual allele frequencies estimated (14). RMSE=0.00011222912014855537
+Individual allele frequencies estimated (15). RMSE=9.810100223999133e-05
+Individual allele frequencies estimated (16). RMSE=8.756007017364764e-05
+Individual allele frequencies estimated (17). RMSE=7.988142688491409e-05
+Individual allele frequencies estimated (18). RMSE=7.421690839743184e-05
+Individual allele frequencies estimated (19). RMSE=7.003604097326286e-05
+Individual allele frequencies estimated (20). RMSE=6.686556671010662e-05
+Individual allele frequencies estimated (21). RMSE=6.440659040424361e-05
+Individual allele frequencies estimated (22). RMSE=6.245889927324809e-05
+Individual allele frequencies estimated (23). RMSE=6.082249880430377e-05
+Individual allele frequencies estimated (24). RMSE=5.930047169565591e-05
+Individual allele frequencies estimated (25). RMSE=5.803032002493691e-05
+Individual allele frequencies estimated (26). RMSE=5.706380369316473e-05
+Individual allele frequencies estimated (27). RMSE=5.6082746770335256e-05
+Individual allele frequencies estimated (28). RMSE=5.519820147258847e-05
+Individual allele frequencies estimated (29). RMSE=5.440790651288633e-05
+Individual allele frequencies estimated (30). RMSE=5.3643360727725246e-05
+Individual allele frequencies estimated (31). RMSE=5.290205201914367e-05
+Individual allele frequencies estimated (32). RMSE=5.2154015217485606e-05
+Individual allele frequencies estimated (33). RMSE=5.14954702812212e-05
+Individual allele frequencies estimated (34). RMSE=5.075965241052838e-05
+Individual allele frequencies estimated (35). RMSE=5.003381468884569e-05
+Individual allele frequencies estimated (36). RMSE=4.938140501418063e-05
+Individual allele frequencies estimated (37). RMSE=4.870878250789004e-05
+Individual allele frequencies estimated (38). RMSE=4.806679001888816e-05
+Individual allele frequencies estimated (39). RMSE=4.748726073973754e-05
+Individual allele frequencies estimated (40). RMSE=4.6837710925352176e-05
+Individual allele frequencies estimated (41). RMSE=4.621498512726563e-05
+Individual allele frequencies estimated (42). RMSE=4.55357519019078e-05
+Individual allele frequencies estimated (43). RMSE=4.502478261685372e-05
+Individual allele frequencies estimated (44). RMSE=4.446614861925729e-05
+Individual allele frequencies estimated (45). RMSE=4.38703294728552e-05
+Individual allele frequencies estimated (46). RMSE=4.328324365808982e-05
+Individual allele frequencies estimated (47). RMSE=4.269857861893594e-05
+Individual allele frequencies estimated (48). RMSE=4.215076798555845e-05
+Individual allele frequencies estimated (49). RMSE=4.166187195108645e-05
+Individual allele frequencies estimated (50). RMSE=4.118685536461391e-05
+Individual allele frequencies estimated (51). RMSE=4.064580645833195e-05
+Individual allele frequencies estimated (52). RMSE=4.008436319260099e-05
+Individual allele frequencies estimated (53). RMSE=3.9574316946341166e-05
+Individual allele frequencies estimated (54). RMSE=3.904449162369974e-05
+Individual allele frequencies estimated (55). RMSE=3.849970572440067e-05
+Individual allele frequencies estimated (56). RMSE=3.800673418584667e-05
+Individual allele frequencies estimated (57). RMSE=3.74735185630654e-05
+Individual allele frequencies estimated (58). RMSE=3.704785899817059e-05
+Individual allele frequencies estimated (59). RMSE=3.656166990342803e-05
+Individual allele frequencies estimated (60). RMSE=3.604778769423618e-05
+Individual allele frequencies estimated (61). RMSE=3.560969122808873e-05
+Individual allele frequencies estimated (62). RMSE=3.519491505634337e-05
+Individual allele frequencies estimated (63). RMSE=3.471741597153187e-05
+Individual allele frequencies estimated (64). RMSE=3.4305919840479296e-05
+Individual allele frequencies estimated (65). RMSE=3.386187817462885e-05
+Individual allele frequencies estimated (66). RMSE=3.3430010404138634e-05
+Individual allele frequencies estimated (67). RMSE=3.297681849493214e-05
+Individual allele frequencies estimated (68). RMSE=3.253394107374288e-05
+Individual allele frequencies estimated (69). RMSE=3.2131874234830823e-05
+Individual allele frequencies estimated (70). RMSE=3.167485861006155e-05
+Individual allele frequencies estimated (71). RMSE=3.129618840796422e-05
+Individual allele frequencies estimated (72). RMSE=3.090518793414384e-05
+Individual allele frequencies estimated (73). RMSE=3.054337140851042e-05
+Individual allele frequencies estimated (74). RMSE=3.0150460684642463e-05
+Individual allele frequencies estimated (75). RMSE=2.9738942754043443e-05
+Individual allele frequencies estimated (76). RMSE=2.93332499553155e-05
+Individual allele frequencies estimated (77). RMSE=2.898821665967975e-05
+Individual allele frequencies estimated (78). RMSE=2.8591044605731785e-05
+Individual allele frequencies estimated (79). RMSE=2.820077924111303e-05
+Individual allele frequencies estimated (80). RMSE=2.7811614236711477e-05
+Individual allele frequencies estimated (81). RMSE=2.7446896343811526e-05
+Individual allele frequencies estimated (82). RMSE=2.715360802055953e-05
+Individual allele frequencies estimated (83). RMSE=2.6790805335462555e-05
+Individual allele frequencies estimated (84). RMSE=2.6337582158660988e-05
+Individual allele frequencies estimated (85). RMSE=2.602781073937785e-05
+Individual allele frequencies estimated (86). RMSE=2.5658757901190013e-05
+Individual allele frequencies estimated (87). RMSE=2.5270769172557746e-05
+Individual allele frequencies estimated (88). RMSE=2.4910989206721436e-05
+Individual allele frequencies estimated (89). RMSE=2.456140933619531e-05
+Individual allele frequencies estimated (90). RMSE=2.4250137091002e-05
+Individual allele frequencies estimated (91). RMSE=2.3894499846474458e-05
+Individual allele frequencies estimated (92). RMSE=2.351956889104406e-05
+Individual allele frequencies estimated (93). RMSE=2.3178041343874885e-05
+Individual allele frequencies estimated (94). RMSE=2.2815089023278205e-05
+Individual allele frequencies estimated (95). RMSE=2.2502967497777354e-05
+Individual allele frequencies estimated (96). RMSE=2.2145594717346383e-05
+Individual allele frequencies estimated (97). RMSE=2.186330062520875e-05
+Individual allele frequencies estimated (98). RMSE=2.151596100481464e-05
+Individual allele frequencies estimated (99). RMSE=2.1168410039883335e-05
+Individual allele frequencies estimated (100). RMSE=2.0850741658337157e-05
+Individual allele frequencies estimated (101). RMSE=2.0525182569237117e-05
+Saved covariance matrix as /users/m/n/mnouriai/myresults/ANGSD/allRS_poly.cov (Text).
+
+Performing selection scan (FastPCA) for 2 PCs.
+Saved test statistics as /users/m/n/mnouriai/myresults/ANGSD/allRS_poly.selection.npy (Binary).
+
+Estimating SNP weights for 2 PCs
+Saved SNP weights as /users/m/n/mnouriai/myresults/ANGSD/allRS_poly.weights.npy (Binary).
+
+Saved boolean vector of sites kept after filtering as /users/m/n/mnouriai/myresults/ANGSD/allRS_poly.sites (Text)
+[mnouriai@ecogen myscripts]$ cd ~/myresults/
+[mnouriai@ecogen myresults]$ cd ~/myresults/ANGSD/
+[mnouriai@ecogen ANGSD]$ ll
+total 1993396
+-rw-r--r--. 1 mnouriai users       7393 Sep 20 11:44 2030_.arg
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:24 2030_bam.list
+-rw-r--r--. 1 mnouriai users          0 Oct  1 15:01 2030_BS.sfs
+-rw-r--r--. 1 mnouriai users          0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 1412264131 Sep 20 11:44 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    1085922 Sep 20 11:44 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users   79446980 Sep 20 11:44 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users        197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users    1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users  518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users     980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users    3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+-rw-r--r--. 1 mnouriai users       9018 Oct  2 10:11 allRS_bam.list
+-rw-r--r--. 1 mnouriai users    7385440 Sep 27 11:25 allRS_poly.admix.2.F.npy
+-rw-r--r--. 1 mnouriai users       1900 Sep 27 11:25 allRS_poly.admix.2.Q
+-rw-r--r--. 1 mnouriai users        270 Oct  2 10:11 allRS_poly.args
+-rw-r--r--. 1 mnouriai users      95252 Oct  2 10:13 allRS_poly.cov
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.selection.npy
+-rw-r--r--. 1 mnouriai users    1187712 Oct  2 10:13 allRS_poly.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.weights.npy
+-rw-r--r--. 1 mnouriai users          0 Sep 29 10:43 ANGSD_Fst.sh
+[mnouriai@ecogen ANGSD]$ head allRS_poly.sites
+1
+1
+1
+0
+1
+1
+1
+1
+1
+1
+[mnouriai@ecogen ANGSD]$ wc -1 all allRS_poly.sites
+wc: invalid option -- '1'
+Try 'wc --help' for more information.
+[mnouriai@ecogen ANGSD]$ wc -1 allRS_poly.sites
+wc: invalid option -- '1'
+Try 'wc --help' for more information.
+[mnouriai@ecogen ANGSD]$ wc -1 allRS_poly.sites
+wc: invalid option -- '1'
+Try 'wc --help' for more information.
+[mnouriai@ecogen ANGSD]$ zcat /netfiles/ecogen/PopulationGenomics/ANGSD/allRS_poly.mafs.gz | cut -f1-7 |
+> zcat /netfiles/ecogen/PopulationGenomics/ANGSD/allRS_poly.mafs.gz | head
+chromo	position	major	minor	ref	anc	knownEM	pK-EM	nInd
+MA_10428445	3567	T	G	T	T	0.363605	0.000000e+00	50
+MA_10428445	3592	G	A	A	A	0.170867	0.000000e+00	61
+MA_10428445	3622	T	G	T	T	0.181024	5.007106e-14	59
+MA_10428445	3625	C	G	C	C	0.049843	4.284795e-12	59
+MA_10428445	3627	C	G	C	C	0.120732	1.290514e-08	57
+MA_10428445	3635	C	T	C	C	0.057616	2.076270e-07	52
+MA_10428445	3646	C	A	C	C	0.125683	9.991341e-11	56
+MA_10428445	3728	G	C	G	G	0.192988	0.000000e+00	51
+MA_10428445	3738	G	A	G	G	0.156945	4.689582e-13	51
+[mnouriai@ecogen ANGSD]$ zcat /netfiles/ecogen/PopulationGenomics/ANGSD/allRS_poly.mafs.gz | cut -f1-7 | head
+chromo	position	major	minor	ref	anc	knownEM
+MA_10428445	3567	T	G	T	T	0.363605
+MA_10428445	3592	G	A	A	A	0.170867
+MA_10428445	3622	T	G	T	T	0.181024
+MA_10428445	3625	C	G	C	C	0.049843
+MA_10428445	3627	C	G	C	C	0.120732
+MA_10428445	3635	C	T	C	C	0.057616
+MA_10428445	3646	C	A	C	C	0.125683
+MA_10428445	3728	G	C	G	G	0.192988
+MA_10428445	3738	G	A	G	G	0.156945
+[mnouriai@ecogen ANGSD]$ sed -i '1i kept_sites' ~/myresults/ANGSD/allRS_poly.sites
+
+[mnouriai@ecogen ANGSD]$ head ~/myresults/ANGSD/allRS_poly.sites
+kept_sites
+1
+1
+1
+0
+1
+1
+1
+1
+1
+[mnouriai@ecogen ANGSD]$ zcat /netfiles/ecogen/PopulationGenomics/ANGSD/allRS_poly.mafs.gz | cut -f1-7 |paste - ~/myresults/ANGSD/allRS_poly.sites >allRS_poly_mafs.sites
+[mnouriai@ecogen ANGSD]$ zcat /netfiles/ecogen/PopulationGenomics/ANGSD/allRS_poly.mafs.gz | cut -f1-7 |paste - ~/myresults/ANGSD/allRS_poly.sites >allRS_poly_mafs.sites| head
+[mnouriai@ecogen ANGSD]$ head allRS_poly_mafs.sites
+chromo	position	major	minor	ref	anc	knownEM	kept_sites
+MA_10428445	3567	T	G	T	T	0.363605	1
+MA_10428445	3592	G	A	A	A	0.170867	1
+MA_10428445	3622	T	G	T	T	0.181024	1
+MA_10428445	3625	C	G	C	C	0.049843	0
+MA_10428445	3627	C	G	C	C	0.120732	1
+MA_10428445	3635	C	T	C	C	0.057616	1
+MA_10428445	3646	C	A	C	C	0.125683	1
+MA_10428445	3728	G	C	G	G	0.192988	1
+MA_10428445	3738	G	A	G	G	0.156945	1
+[mnouriai@ecogen ANGSD]$ ll
+total 2013400
+-rw-r--r--. 1 mnouriai users       7393 Sep 20 11:44 2030_.arg
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:24 2030_bam.list
+-rw-r--r--. 1 mnouriai users          0 Oct  1 15:01 2030_BS.sfs
+-rw-r--r--. 1 mnouriai users          0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 1412264131 Sep 20 11:44 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    1085922 Sep 20 11:44 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users   79446980 Sep 20 11:44 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users        197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users    1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users  518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users     980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users    3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+-rw-r--r--. 1 mnouriai users       9018 Oct  2 10:11 allRS_bam.list
+-rw-r--r--. 1 mnouriai users    7385440 Sep 27 11:25 allRS_poly.admix.2.F.npy
+-rw-r--r--. 1 mnouriai users       1900 Sep 27 11:25 allRS_poly.admix.2.Q
+-rw-r--r--. 1 mnouriai users        270 Oct  2 10:11 allRS_poly.args
+-rw-r--r--. 1 mnouriai users      95252 Oct  2 10:13 allRS_poly.cov
+-rw-r--r--. 1 mnouriai users   20481606 Oct  2 10:22 allRS_poly_mafs.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.selection.npy
+-rw-r--r--. 1 mnouriai users    1187723 Oct  2 10:20 allRS_poly.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.weights.npy
+-rw-r--r--. 1 mnouriai users          0 Sep 29 10:43 ANGSD_Fst.sh
+[mnouriai@ecogen ANGSD]$ wc -l all allRS_poly.sites
+wc: all: No such file or directory
+ 593857 allRS_poly.sites
+ 593857 total
+[mnouriai@ecogen ANGSD]$ ll
+total 2013400
+-rw-r--r--. 1 mnouriai users       7393 Sep 20 11:44 2030_.arg
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:24 2030_bam.list
+-rw-r--r--. 1 mnouriai users          0 Oct  1 15:01 2030_BS.sfs
+-rw-r--r--. 1 mnouriai users          0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 1412264131 Sep 20 11:44 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    1085922 Sep 20 11:44 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users   79446980 Sep 20 11:44 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users        197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users    1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users  518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users     980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users    3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+-rw-r--r--. 1 mnouriai users       9018 Oct  2 10:11 allRS_bam.list
+-rw-r--r--. 1 mnouriai users    7385440 Sep 27 11:25 allRS_poly.admix.2.F.npy
+-rw-r--r--. 1 mnouriai users       1900 Sep 27 11:25 allRS_poly.admix.2.Q
+-rw-r--r--. 1 mnouriai users        270 Oct  2 10:11 allRS_poly.args
+-rw-r--r--. 1 mnouriai users      95252 Oct  2 10:13 allRS_poly.cov
+-rw-r--r--. 1 mnouriai users   20481606 Oct  2 10:22 allRS_poly_mafs.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.selection.npy
+-rw-r--r--. 1 mnouriai users    1187723 Oct  2 10:20 allRS_poly.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.weights.npy
+-rw-r--r--. 1 mnouriai users          0 Sep 29 10:43 ANGSD_Fst.sh
+[mnouriai@ecogen ANGSD]$ ANNOT="/netfiles/ecogen/PopulationGenomics/ref_genome/annotation/Pabies1.0-all-cds.gff3.gz"
+[mnouriai@ecogen ANGSD]$ OUTLIERS=~/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT}| head
+##gff-version   3
+##sequence-region   MA_10 24712 27159
+##sequence-region   MA_10000213 1 1451
+##sequence-region   MA_10000405 1 917
+##sequence-region   MA_1000049 357 756
+##sequence-region   MA_10000516 1259 1612
+##sequence-region   MA_10001 14379 15197
+##sequence-region   MA_10001015 1268 1807
+##sequence-region   MA_10001337 1 863
+##sequence-region   MA_10001425 1 603
+[mnouriai@ecogen ANGSD]$ OUTLIERS=~/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS}| grep "gene" | uniq | cut -f9 | sed "s/ID=//g"
+grep: /users/m/n/mnouriai/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt: No such file or directory
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS}| grep "gene"
+grep: /users/m/n/mnouriai/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt: No such file or directory
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g"
+grep: /users/m/n/mnouriai/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt: No such file or directory
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g
+> zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g^C
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9                 
+grep: /users/m/n/mnouriai/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt: No such file or directory
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g
+> zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g^C
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g
+> ^C
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g
+> 
+> ^C
+[mnouriai@ecogen ANGSD]$ ANNOT="/netfiles/ecogen/PopulationGenomics/ref_genome/annotation/Pabies1.0-all-cds.gff3.gz"
+[mnouriai@ecogen ANGSD]$ OUTLIERS=~/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt
+[mnouriai@ecogen ANGSD]$ OUTLIERS=~/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g"
+grep: /users/m/n/mnouriai/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt: No such file or directory
+[mnouriai@ecogen ANGSD]$ ll
+total 2013400
+-rw-r--r--. 1 mnouriai users       7393 Sep 20 11:44 2030_.arg
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:24 2030_bam.list
+-rw-r--r--. 1 mnouriai users          0 Oct  1 15:01 2030_BS.sfs
+-rw-r--r--. 1 mnouriai users          0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 1412264131 Sep 20 11:44 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    1085922 Sep 20 11:44 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users   79446980 Sep 20 11:44 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users        197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users    1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users  518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users     980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users    3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+-rw-r--r--. 1 mnouriai users       9018 Oct  2 10:11 allRS_bam.list
+-rw-r--r--. 1 mnouriai users    7385440 Sep 27 11:25 allRS_poly.admix.2.F.npy
+-rw-r--r--. 1 mnouriai users       1900 Sep 27 11:25 allRS_poly.admix.2.Q
+-rw-r--r--. 1 mnouriai users        270 Oct  2 10:11 allRS_poly.args
+-rw-r--r--. 1 mnouriai users      95252 Oct  2 10:13 allRS_poly.cov
+-rw-r--r--. 1 mnouriai users   20481606 Oct  2 10:22 allRS_poly_mafs.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.selection.npy
+-rw-r--r--. 1 mnouriai users    1187723 Oct  2 10:20 allRS_poly.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.weights.npy
+-rw-r--r--. 1 mnouriai users          0 Sep 29 10:43 ANGSD_Fst.sh
+[mnouriai@ecogen ANGSD]$ ll
+total 2013404
+-rw-r--r--. 1 mnouriai users       7393 Sep 20 11:44 2030_.arg
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:24 2030_bam.list
+-rw-r--r--. 1 mnouriai users          0 Oct  1 15:01 2030_BS.sfs
+-rw-r--r--. 1 mnouriai users          0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 1412264131 Sep 20 11:44 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    1085922 Sep 20 11:44 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users   79446980 Sep 20 11:44 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users        197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users    1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users  518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users     980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users    3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+-rw-r--r--. 1 mnouriai users       9018 Oct  2 10:11 allRS_bam.list
+-rw-r--r--. 1 mnouriai users    7385440 Sep 27 11:25 allRS_poly.admix.2.F.npy
+-rw-r--r--. 1 mnouriai users       1900 Sep 27 11:25 allRS_poly.admix.2.Q
+-rw-r--r--. 1 mnouriai users        270 Oct  2 10:11 allRS_poly.args
+-rw-r--r--. 1 mnouriai users      95252 Oct  2 10:13 allRS_poly.cov
+-rw-r--r--. 1 mnouriai users   20481606 Oct  2 10:22 allRS_poly_mafs.sites
+-rw-r--r--. 1 mnouriai users        126 Oct  2 11:27 allRS_poly_PC1_outlier_contigs.txt
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.selection.npy
+-rw-r--r--. 1 mnouriai users    1187723 Oct  2 10:20 allRS_poly.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.weights.npy
+-rw-r--r--. 1 mnouriai users          0 Sep 29 10:43 ANGSD_Fst.sh
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g"
+MA_10437256g0010
+MA_12619g0010
+MA_126192g0010
+MA_17059g0010
+MA_170592g0010
+MA_170596g0010
+MA_170598g0010
+MA_18703g0010
+MA_187038g0010
+MA_2314g0010
+MA_231408g0010
+MA_23142g0010
+MA_23144g0010
+MA_23147g0010
+MA_231485g0010
+MA_23149g0010
+MA_28816g0010
+MA_32839g0010
+MA_32839g0020
+MA_330807g0010
+MA_350040g0010
+MA_503521g0010
+MA_685468g0010
+[mnouriai@ecogen ANGSD]$ zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g">outfile.txt
+[mnouriai@ecogen ANGSD]$ cd ~/myscripts/
+[mnouriai@ecogen myscripts]$ ll
+total 40
+-rw-r--r--. 1 mnouriai users  947 Sep 27 11:24  ANGSD_allRS_poly.sh
+-rw-r--r--. 1 mnouriai users  599 Sep 25 10:57  ANGSD_doTheta.sh
+-rw-r--r--. 1 mnouriai users  828 Sep 27 10:42  ANGSD_Fst.sh
+-rw-r--r--. 1 mnouriai users  958 Sep 20 11:31  ANGSD.sh
+-rw-r--r--. 1 mnouriai users    0 Sep 20 10:35  bam.stats.sh
+-rw-r--r-x. 1 mnouriai users 2054 Sep 20 10:51  bam_stats.sh
+-rw-r--r-x. 1 mnouriai users 1660 Sep 13 11:06  fastp.sh
+-rwxr--r-x. 1 mnouriai users 1135 Sep 13 11:40  mapping.sh
+-rw-r--r--. 1 mnouriai users  551 Oct  2 10:11  pcANGSD_selection.sh
+-rw-r--r-x. 1 mnouriai users  744 Sep 18 11:19  process_bam.sh
+-rw-r--r--. 1 mnouriai users  830 Oct  1 14:54 'realSFS fst stats ${MYPOP}_BS.fst.idx'
+[mnouriai@ecogen myscripts]$ vim ANGSD.sh
+[mnouriai@ecogen myscripts]$ tmux
+[detached (from session 8)]
+[mnouriai@ecogen myscripts]$ vim ANGSD_Fst.sh 
+[mnouriai@ecogen myscripts]$ cd ../myresults/
+[mnouriai@ecogen myresults]$ ll
+total 12
+-rw-r--r--. 1 mnouriai users  673 Sep 20 10:55 2030.stats.txt
+drwxr-xr-x. 2 mnouriai users 4096 Oct  2 11:28 ANGSD
+drwxr-xr-x. 2 mnouriai users 4096 Sep 13 11:12 fastqc
+[mnouriai@ecogen myresults]$ cd ANGSD/
+[mnouriai@ecogen ANGSD]$ ll
+total 1113024
+-rw-r--r--. 1 mnouriai users      4096 Oct  2 11:41 2030_.arg
+-rw-r--r--. 1 mnouriai users       765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users       765 Oct  2 11:41 2030_bam.list
+-rw-r--r--. 1 mnouriai users         0 Oct  1 15:01 2030_BS.sfs
+-rw-r--r--. 1 mnouriai users         0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 522237170 Oct  2 11:45 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    425984 Oct  2 11:45 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users  29413847 Oct  2 11:45 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users       197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users   1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users 518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users    980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users   3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+-rw-r--r--. 1 mnouriai users      9018 Oct  2 10:11 allRS_bam.list
+-rw-r--r--. 1 mnouriai users   7385440 Sep 27 11:25 allRS_poly.admix.2.F.npy
+-rw-r--r--. 1 mnouriai users      1900 Sep 27 11:25 allRS_poly.admix.2.Q
+-rw-r--r--. 1 mnouriai users       270 Oct  2 10:11 allRS_poly.args
+-rw-r--r--. 1 mnouriai users     95252 Oct  2 10:13 allRS_poly.cov
+-rw-r--r--. 1 mnouriai users  20481606 Oct  2 10:22 allRS_poly_mafs.sites
+-rw-r--r--. 1 mnouriai users       126 Oct  2 11:27 allRS_poly_PC1_outlier_contigs.txt
+-rw-r--r--. 1 mnouriai users   7385440 Oct  2 10:13 allRS_poly.selection.npy
+-rw-r--r--. 1 mnouriai users   1187723 Oct  2 10:20 allRS_poly.sites
+-rw-r--r--. 1 mnouriai users   7385440 Oct  2 10:13 allRS_poly.weights.npy
+-rw-r--r--. 1 mnouriai users         0 Sep 29 10:43 ANGSD_Fst.sh
+-rw-r--r--. 1 mnouriai users       335 Oct  2 11:28 outfile.txt
+[mnouriai@ecogen ANGSD]$ ll
+total 1637312
+-rw-r--r--. 1 mnouriai users      4096 Oct  2 11:41 2030_.arg
+-rw-r--r--. 1 mnouriai users       765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users       765 Oct  2 11:41 2030_bam.list
+-rw-r--r--. 1 mnouriai users         0 Oct  1 15:01 2030_BS.sfs
+-rw-r--r--. 1 mnouriai users         0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 560811604 Oct  2 11:46 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    458752 Oct  2 11:46 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users  31627023 Oct  2 11:46 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users       197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users   1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users 518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users    980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users   3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+-rw-r--r--. 1 mnouriai users      9018 Oct  2 10:11 allRS_bam.list
+-rw-r--r--. 1 mnouriai users   7385440 Sep 27 11:25 allRS_poly.admix.2.F.npy
+-rw-r--r--. 1 mnouriai users      1900 Sep 27 11:25 allRS_poly.admix.2.Q
+-rw-r--r--. 1 mnouriai users       270 Oct  2 10:11 allRS_poly.args
+-rw-r--r--. 1 mnouriai users     95252 Oct  2 10:13 allRS_poly.cov
+-rw-r--r--. 1 mnouriai users  20481606 Oct  2 10:22 allRS_poly_mafs.sites
+-rw-r--r--. 1 mnouriai users       126 Oct  2 11:27 allRS_poly_PC1_outlier_contigs.txt
+-rw-r--r--. 1 mnouriai users   7385440 Oct  2 10:13 allRS_poly.selection.npy
+-rw-r--r--. 1 mnouriai users   1187723 Oct  2 10:20 allRS_poly.sites
+-rw-r--r--. 1 mnouriai users   7385440 Oct  2 10:13 allRS_poly.weights.npy
+-rw-r--r--. 1 mnouriai users         0 Sep 29 10:43 ANGSD_Fst.sh
+-rw-r--r--. 1 mnouriai users       335 Oct  2 11:28 outfile.txt
+[mnouriai@ecogen ANGSD]$ tmux attach-session
+[detached (from session 8)]
+[mnouriai@ecogen ANGSD]$ ll
+total 2013408
+-rw-r--r--. 1 mnouriai users       7393 Oct  2 11:53 2030_.arg
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users        765 Oct  2 11:41 2030_bam.list
+-rw-r--r--. 1 mnouriai users          0 Oct  1 15:01 2030_BS.sfs
+-rw-r--r--. 1 mnouriai users          0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 1412264131 Oct  2 11:53 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    1085922 Oct  2 11:53 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users   79446980 Oct  2 11:53 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users        197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users    1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users  518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users     980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users    3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+-rw-r--r--. 1 mnouriai users       9018 Oct  2 10:11 allRS_bam.list
+-rw-r--r--. 1 mnouriai users    7385440 Sep 27 11:25 allRS_poly.admix.2.F.npy
+-rw-r--r--. 1 mnouriai users       1900 Sep 27 11:25 allRS_poly.admix.2.Q
+-rw-r--r--. 1 mnouriai users        270 Oct  2 10:11 allRS_poly.args
+-rw-r--r--. 1 mnouriai users      95252 Oct  2 10:13 allRS_poly.cov
+-rw-r--r--. 1 mnouriai users   20481606 Oct  2 10:22 allRS_poly_mafs.sites
+-rw-r--r--. 1 mnouriai users        126 Oct  2 11:27 allRS_poly_PC1_outlier_contigs.txt
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.selection.npy
+-rw-r--r--. 1 mnouriai users    1187723 Oct  2 10:20 allRS_poly.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.weights.npy
+-rw-r--r--. 1 mnouriai users          0 Sep 29 10:43 ANGSD_Fst.sh
+-rw-r--r--. 1 mnouriai users        335 Oct  2 11:28 outfile.txt
+[mnouriai@ecogen ANGSD]$ tmux attach-session
+[exited]
+[mnouriai@ecogen ANGSD]$ ll
+total 2013408
+-rw-r--r--. 1 mnouriai users       7393 Oct  2 11:53 2030_.arg
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users        765 Oct  2 11:41 2030_bam.list
+-rw-r--r--. 1 mnouriai users          0 Oct  1 15:01 2030_BS.sfs
+-rw-r--r--. 1 mnouriai users          0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 1412264131 Oct  2 11:53 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    1085922 Oct  2 11:53 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users   79446980 Oct  2 11:53 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users        197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users    1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users  518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users     980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users    3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+-rw-r--r--. 1 mnouriai users       9018 Oct  2 10:11 allRS_bam.list
+-rw-r--r--. 1 mnouriai users    7385440 Sep 27 11:25 allRS_poly.admix.2.F.npy
+-rw-r--r--. 1 mnouriai users       1900 Sep 27 11:25 allRS_poly.admix.2.Q
+-rw-r--r--. 1 mnouriai users        270 Oct  2 10:11 allRS_poly.args
+-rw-r--r--. 1 mnouriai users      95252 Oct  2 10:13 allRS_poly.cov
+-rw-r--r--. 1 mnouriai users   20481606 Oct  2 10:22 allRS_poly_mafs.sites
+-rw-r--r--. 1 mnouriai users        126 Oct  2 11:27 allRS_poly_PC1_outlier_contigs.txt
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.selection.npy
+-rw-r--r--. 1 mnouriai users    1187723 Oct  2 10:20 allRS_poly.sites
+-rw-r--r--. 1 mnouriai users    7385440 Oct  2 10:13 allRS_poly.weights.npy
+-rw-r--r--. 1 mnouriai users          0 Sep 29 10:43 ANGSD_Fst.sh
+-rw-r--r--. 1 mnouriai users        335 Oct  2 11:28 outfile.txt
+[mnouriai@ecogen ANGSD]$ 

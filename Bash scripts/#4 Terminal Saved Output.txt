@@ -1,0 +1,103 @@
+Last login: Wed Sep 20 10:31:51 on ttys000
+maryamnouri-aiin@ip0af5222a ~ % ssh mnouriai@ecogen.uvm.edu
+mnouriai@ecogen.uvm.edu's password: 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+                        RHEL 9
+                        ecogen.uvm.edu 
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+Last failed login: Wed Sep 20 10:32:17 EDT 2023 from 10.245.34.42 on ssh:notty
+There was 1 failed login attempt since the last successful login.
+Last login: Wed Sep 20 10:30:04 2023 from 10.245.34.42
+[mnouriai@ecogen ~]$ vim bam_stats.sh
+[mnouriai@ecogen ~]$ cd ~/myscripts/
+[mnouriai@ecogen myscripts]$ ls
+bam_stats.sh  fastp.sh  mapping.sh  process_bam.sh
+[mnouriai@ecogen myscripts]$ vim bam.stats.sh
+[mnouriai@ecogen myscripts]$ vim bam_stats.sh
+
+
+
+
+
+
+
+
+
+
+
+
+[mnouriai@ecogen myscripts]$ bash bam_stats.sh
+^C
+[mnouriai@ecogen myscripts]$ cd ~/myresults/
+[mnouriai@ecogen myresults]$ ls
+2030.flagstats  2030.names  2030.stats.txt  fastqc
+[mnouriai@ecogen myresults]$ cat 2030.stats.txt
+SampleID Num_reads Num_R1 Num_R2 Num_Paired Num_MateMapped Num_Singletons Num_MateMappedDiffChr Coverage_depth
+[mnouriai@ecogen myresults]$ cd ~/myscripts/
+[mnouriai@ecogen myscripts]$ vim bam_stats.sh 
+[mnouriai@ecogen myscripts]$ cd ~/myresults/
+[mnouriai@ecogen myresults]$ ls
+2030.flagstats  2030.names  2030.stats.txt  fastqc
+[mnouriai@ecogen myresults]$ rm 2030*
+rm: remove regular file '2030.flagstats'? y
+rm: remove regular file '2030.names'? y
+rm: remove regular file '2030.stats.txt'? y
+[mnouriai@ecogen myresults]$ bash ~/myscripts/bam_stats.sh 
+[mnouriai@ecogen myresults]$ cd ~/myresults/
+[mnouriai@ecogen myresults]$ ls
+2030.stats.txt  fastqc
+[mnouriai@ecogen myresults]$ cat 2030.stats.text
+cat: 2030.stats.text: No such file or directory
+[mnouriai@ecogen myresults]$ cat 2030.stats.txt
+SampleID Num_reads Num_R1 Num_R2 Num_Paired Num_MateMapped Num_Singletons Num_MateMappedDiffChr Coverage_depth
+2030_1_F	2004314	1001564	1002750	1322120	1792924	52414	455936	3.61137
+2030_3_H	2595732	1296899	1298833	1724166	2306270	59686	562280	4.2715
+2030_4_J	2781763	1387844	1393919	1747074	2439496	81772	671434	4.16399
+2030_56_O	2766820	1380936	1385884	1733044	2434478	81565	680928	4.12433
+2030_57_O	3665185	1830069	1835116	2325700	3219390	97898	866836	4.91155
+2030_58_K	2705508	1351338	1354170	1764406	2393840	75049	608770	4.22044
+2030_59_N	2758303	1377949	1380354	1785902	2450394	71265	644168	4.3526
+2030_60_L	2204473	1101337	1103136	1459570	1960972	59040	484540	3.8847
+[mnouriai@ecogen myresults]$ ~/myscripts/
+-bash: /users/m/n/mnouriai/myscripts/: Is a directory
+[mnouriai@ecogen myresults]$ cd ../myscripts/
+[mnouriai@ecogen myscripts]$ vim ANGSD.sh
+[mnouriai@ecogen myscripts]$ bash ANGSD.sh
+[mnouriai@ecogen myscripts]$ ll ../results/ANGSD/
+ls: cannot access '../results/ANGSD/': No such file or directory
+[mnouriai@ecogen myscripts]$ ll ../myresults/ANGSD/
+total 4
+-rw-r--r--. 1 mnouriai users 765 Sep 20 11:22 2030_bam.list
+[mnouriai@ecogen myscripts]$ ll /myresults/ANGSD/
+ls: cannot access '/myresults/ANGSD/': No such file or directory
+[mnouriai@ecogen myscripts]$ bash ANGSD.sh
+mkdir: cannot create directory ‘/users/m/n/mnouriai/myresults/ANGSD’: File exists
+[mnouriai@ecogen myscripts]$ cd ~/
+[mnouriai@ecogen ~]$ cd ~/myresults
+[mnouriai@ecogen myresults]$ ls
+2030.stats.txt  ANGSD  fastqc
+[mnouriai@ecogen myresults]$ cd ANGSD
+[mnouriai@ecogen ANGSD]$ ls
+2030_bam.list
+[mnouriai@ecogen ANGSD]$ cat 2030_bam.list
+/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam//2030_1_F.sorted.rmdup.bam
+/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam//2030_3_H.sorted.rmdup.bam
+/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam//2030_4_J.sorted.rmdup.bam
+/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam//2030_56_O.sorted.rmdup.bam
+/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam//2030_57_O.sorted.rmdup.bam
+/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam//2030_58_K.sorted.rmdup.bam
+/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam//2030_59_N.sorted.rmdup.bam
+/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam//2030_60_L.sorted.rmdup.bam
+[mnouriai@ecogen ANGSD]$ vim ANGSD.sh
+[mnouriai@ecogen ANGSD]$ cd ~/
+[mnouriai@ecogen ~]$ cd /myscripts
+-bash: cd: /myscripts: No such file or directory
+[mnouriai@ecogen ~]$ cd /myscripts/
+-bash: cd: /myscripts/: No such file or directory
+[mnouriai@ecogen ~]$ cd myscripts
+[mnouriai@ecogen myscripts]$ vim ANGSD.sh
+[mnouriai@ecogen myscripts]$ tmux
+[detached (from session 2)]
+[mnouriai@ecogen myscripts]$ 

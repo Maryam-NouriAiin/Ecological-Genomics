@@ -1,0 +1,56 @@
+Last login: Mon Sep 25 11:00:27 on ttys001
+maryamnouri-aiin@ip0af521ee ~ % ssh mnouriai@ecogen.uvm.edu
+mnouriai@ecogen.uvm.edu's password: 
+Permission denied, please try again.
+mnouriai@ecogen.uvm.edu's password: 
+
+maryamnouri-aiin@ip0af521ee ~ % ssh mnouriai@ecogen.uvm.edu
+mnouriai@ecogen.uvm.edu's password: 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+                        RHEL 9
+                        ecogen.uvm.edu 
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+Last failed login: Wed Sep 27 10:10:32 EDT 2023 from 10.245.33.238 on ssh:notty
+There was 1 failed login attempt since the last successful login.
+Last login: Mon Sep 25 11:00:48 2023 from 10.245.32.57
+[mnouriai@ecogen ~]$ cd myscripts
+[mnouriai@ecogen myscripts]$ vim
+[mnouriai@ecogen myscripts]$ tmux
+[detached (from session 5)]
+[mnouriai@ecogen myscripts]$ ll
+total 28
+-rw-r--r--. 1 mnouriai users  599 Sep 25 10:57 ANGSD_doTheta.sh
+-rw-r--r--. 1 mnouriai users  828 Sep 27 10:42 ANGSD_Fst.sh
+-rw-r--r--. 1 mnouriai users  958 Sep 20 11:31 ANGSD.sh
+-rw-r--r--. 1 mnouriai users    0 Sep 20 10:35 bam.stats.sh
+-rw-r--r-x. 1 mnouriai users 2054 Sep 20 10:51 bam_stats.sh
+-rw-r--r-x. 1 mnouriai users 1660 Sep 13 11:06 fastp.sh
+-rwxr--r-x. 1 mnouriai users 1135 Sep 13 11:40 mapping.sh
+-rw-r--r-x. 1 mnouriai users  744 Sep 18 11:19 process_bam.sh
+[mnouriai@ecogen myscripts]$ vim
+[mnouriai@ecogen myscripts]$ tmux
+[detached (from session 6)]
+[mnouriai@ecogen myscripts]$ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,969 @@
+Last login: Mon Sep 11 11:03:44 on ttys000
+maryamnouri-aiin@ip0af52631 ~ % ssh mnouriai@ecogen.uvm.edu
+mnouriai@ecogen.uvm.edu's password: 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+                        RHEL 9
+                        ecogen.uvm.edu 
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+Last login: Mon Sep 11 11:08:15 2023 from 10.245.46.130
+[mnouriai@ecogen ~]$ users
+00ngorma akissone alantigu crhanrah edombro1 ffoppenh gellis1 geppetto jhart12 kellrlab kellrlab kellrlab mnouriai moconn19 neolson nheaphy rviscont sbjorklu srkeller
+[mnouriai@ecogen ~]$ cp /netfiles/ecogen/PopulationGenomics/scripts/fastp.sh ~/myscripts/
+[mnouriai@ecogen ~]$ pwd
+/users/m/n/mnouriai
+[mnouriai@ecogen ~]$ ll
+total 0
+drwxr-xr-x. 2 mnouriai users  6 Sep 11 11:20 mydata
+drwxr-xr-x. 3 mnouriai users 20 Sep 11 11:29 myresults
+drwxr-xr-x. 2 mnouriai users 22 Sep 13 10:48 myscripts
+[mnouriai@ecogen ~]$ cd myscripts/
+[mnouriai@ecogen myscripts]$ ll
+total 4
+-rw-r--r-x. 1 mnouriai users 1305 Sep 13 10:48 fastp.sh
+[mnouriai@ecogen myscripts]$ vim fastp.sh
+[mnouriai@ecogen myscripts]$ vim fastp.sh
+
+
+
+
+
+
+
+
+
+[mnouriai@ecogen myscripts]$ cd myscripts
+-bash: cd: myscripts: No such file or directory
+[mnouriai@ecogen myscripts]$ 
+[mnouriai@ecogen myscripts]$ bash fastp.sh 
+fastp.sh: line 5: i: command not found
+2030_1_F_R1.fastq.gz 2030_1_F_R2.fastq.gz
+2030_1_F_R1_clean.fastq.gz 2030_1_F_R2_clean.fastq.gz
+fastp.sh: line 39: i: command not found
+Detecting adapter sequence for read1...
+>Illumina TruSeq Adapter Read 1
+AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+
+Detecting adapter sequence for read2...
+>Illumina TruSeq Adapter Read 2
+AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+
+Read1 before filtering:
+total reads: 2024617
+total bases: 305717167
+Q20 bases: 296652072(97.0348%)
+Q30 bases: 281229196(91.99%)
+
+Read2 before filtering:
+total reads: 2024617
+total bases: 305717167
+Q20 bases: 293170700(95.8961%)
+Q30 bases: 275340313(90.0637%)
+
+Read1 after filtering:
+total reads: 1943480
+total bases: 278836244
+Q20 bases: 273254003(97.998%)
+Q30 bases: 260441233(93.4029%)
+
+Read2 after filtering:
+total reads: 1943480
+total bases: 278331342
+Q20 bases: 271468869(97.5344%)
+Q30 bases: 256694330(92.2262%)
+
+Filtering result:
+reads passed filter: 3886960
+reads failed due to low quality: 2250
+reads failed due to too many N: 272
+reads failed due to too short: 159752
+reads with adapter trimmed: 48825
+bases trimmed due to adapters: 1198598
+
+Duplication rate: 21.1518%
+
+Insert size peak (evaluated by paired-end reads): 156
+
+JSON report: /users/m/n/mnouriai/myresults/fastqc/2030_1_F_R1_clean.fastq.gz.json
+HTML report: /users/m/n/mnouriai/myresults/fastqc/2030_1_F_R1_clean.fastq.gz.html
+
+/data/popgen/fastp -i 2030_1_F_R1.fastq.gz -I 2030_1_F_R2.fastq.gz -o cleanreads/2030_1_F_R1_clean.fastq.gz -O cleanreads/2030_1_F_R2_clean.fastq.gz --detect_adapter_for_pe --trim_front1 5 --trim_poly_g --thread 1 --cut_right --cut_window_size 6 --qualified_quality_phred 20 --length_required 35 --html /users/m/n/mnouriai/myresults/fastqc/2030_1_F_R1_clean.fastq.gz.html --json /users/m/n/mnouriai/myresults/fastqc/2030_1_F_R1_clean.fastq.gz.json 
+fastp v0.23.4, time used: 34 seconds
+2030_3_H_R1.fastq.gz 2030_3_H_R2.fastq.gz
+2030_3_H_R1_clean.fastq.gz 2030_3_H_R2_clean.fastq.gz
+fastp.sh: line 39: i: command not found
+Detecting adapter sequence for read1...
+>Illumina TruSeq Adapter Read 1
+AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+
+Detecting adapter sequence for read2...
+>Illumina TruSeq Adapter Read 2
+AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+
+Read1 before filtering:
+total reads: 2093934
+total bases: 316184034
+Q20 bases: 306612499(96.9728%)
+Q30 bases: 290502841(91.8778%)
+
+Read2 before filtering:
+total reads: 2093934
+total bases: 316184034
+Q20 bases: 303555998(96.0061%)
+Q30 bases: 285184145(90.1956%)
+
+Read1 after filtering:
+total reads: 2013181
+total bases: 288685388
+Q20 bases: 282829661(97.9716%)
+Q30 bases: 269456075(93.339%)
+
+Read2 after filtering:
+total reads: 2013181
+total bases: 288491516
+Q20 bases: 281406946(97.5443%)
+Q30 bases: 266103476(92.2396%)
+
+Filtering result:
+reads passed filter: 4026362
+reads failed due to low quality: 2258
+reads failed due to too many N: 316
+reads failed due to too short: 158932
+reads with adapter trimmed: 47839
+bases trimmed due to adapters: 1142664
+
+Duplication rate: 24.1826%
+
+Insert size peak (evaluated by paired-end reads): 156
+
+JSON report: /users/m/n/mnouriai/myresults/fastqc/2030_3_H_R1_clean.fastq.gz.json
+HTML report: /users/m/n/mnouriai/myresults/fastqc/2030_3_H_R1_clean.fastq.gz.html
+
+/data/popgen/fastp -i 2030_3_H_R1.fastq.gz -I 2030_3_H_R2.fastq.gz -o cleanreads/2030_3_H_R1_clean.fastq.gz -O cleanreads/2030_3_H_R2_clean.fastq.gz --detect_adapter_for_pe --trim_front1 5 --trim_poly_g --thread 1 --cut_right --cut_window_size 6 --qualified_quality_phred 20 --length_required 35 --html /users/m/n/mnouriai/myresults/fastqc/2030_3_H_R1_clean.fastq.gz.html --json /users/m/n/mnouriai/myresults/fastqc/2030_3_H_R1_clean.fastq.gz.json 
+fastp v0.23.4, time used: 37 seconds
+2030_4_J_R1.fastq.gz 2030_4_J_R2.fastq.gz
+2030_4_J_R1_clean.fastq.gz 2030_4_J_R2_clean.fastq.gz
+fastp.sh: line 39: i: command not found
+Detecting adapter sequence for read1...
+No adapter detected for read1
+
+Detecting adapter sequence for read2...
+No adapter detected for read2
+
+Read1 before filtering:
+total reads: 2090029
+total bases: 315594379
+Q20 bases: 306085817(96.9871%)
+Q30 bases: 289829182(91.836%)
+
+Read2 before filtering:
+total reads: 2090029
+total bases: 315594379
+Q20 bases: 296690677(94.0101%)
+Q30 bases: 273067257(86.5248%)
+
+Read1 after filtering:
+total reads: 1981046
+total bases: 284917900
+Q20 bases: 279185782(97.9882%)
+Q30 bases: 265993290(93.3579%)
+
+Read2 after filtering:
+total reads: 1981046
+total bases: 280398665
+Q20 bases: 270076532(96.3188%)
+Q30 bases: 251003945(89.5168%)
+
+Filtering result:
+reads passed filter: 3962092
+reads failed due to low quality: 3616
+reads failed due to too many N: 252
+reads failed due to too short: 214098
+reads with adapter trimmed: 22042
+bases trimmed due to adapters: 594220
+
+Duplication rate: 16.575%
+
+Insert size peak (evaluated by paired-end reads): 156
+
+JSON report: /users/m/n/mnouriai/myresults/fastqc/2030_4_J_R1_clean.fastq.gz.json
+HTML report: /users/m/n/mnouriai/myresults/fastqc/2030_4_J_R1_clean.fastq.gz.html
+
+/data/popgen/fastp -i 2030_4_J_R1.fastq.gz -I 2030_4_J_R2.fastq.gz -o cleanreads/2030_4_J_R1_clean.fastq.gz -O cleanreads/2030_4_J_R2_clean.fastq.gz --detect_adapter_for_pe --trim_front1 5 --trim_poly_g --thread 1 --cut_right --cut_window_size 6 --qualified_quality_phred 20 --length_required 35 --html /users/m/n/mnouriai/myresults/fastqc/2030_4_J_R1_clean.fastq.gz.html --json /users/m/n/mnouriai/myresults/fastqc/2030_4_J_R1_clean.fastq.gz.json 
+fastp v0.23.4, time used: 33 seconds
+2030_56_O_R1.fastq.gz 2030_56_O_R2.fastq.gz
+2030_56_O_R1_clean.fastq.gz 2030_56_O_R2_clean.fastq.gz
+fastp.sh: line 39: i: command not found
+Detecting adapter sequence for read1...
+No adapter detected for read1
+
+Detecting adapter sequence for read2...
+No adapter detected for read2
+
+Read1 before filtering:
+total reads: 2060473
+total bases: 311131423
+Q20 bases: 301614683(96.9412%)
+Q30 bases: 285462418(91.7498%)
+
+Read2 before filtering:
+total reads: 2060473
+total bases: 311131423
+Q20 bases: 292733951(94.0869%)
+Q30 bases: 269728365(86.6927%)
+
+Read1 after filtering:
+total reads: 1950937
+total bases: 280493974
+Q20 bases: 274781987(97.9636%)
+Q30 bases: 261700207(93.2998%)
+
+Read2 after filtering:
+total reads: 1950937
+total bases: 276416623
+Q20 bases: 266445747(96.3928%)
+Q30 bases: 247897445(89.6825%)
+
+Filtering result:
+reads passed filter: 3901874
+reads failed due to low quality: 3572
+reads failed due to too many N: 240
+reads failed due to too short: 215260
+reads with adapter trimmed: 22876
+bases trimmed due to adapters: 630327
+
+Duplication rate: 16.2645%
+
+Insert size peak (evaluated by paired-end reads): 156
+
+JSON report: /users/m/n/mnouriai/myresults/fastqc/2030_56_O_R1_clean.fastq.gz.json
+HTML report: /users/m/n/mnouriai/myresults/fastqc/2030_56_O_R1_clean.fastq.gz.html
+
+/data/popgen/fastp -i 2030_56_O_R1.fastq.gz -I 2030_56_O_R2.fastq.gz -o cleanreads/2030_56_O_R1_clean.fastq.gz -O cleanreads/2030_56_O_R2_clean.fastq.gz --detect_adapter_for_pe --trim_front1 5 --trim_poly_g --thread 1 --cut_right --cut_window_size 6 --qualified_quality_phred 20 --length_required 35 --html /users/m/n/mnouriai/myresults/fastqc/2030_56_O_R1_clean.fastq.gz.html --json /users/m/n/mnouriai/myresults/fastqc/2030_56_O_R1_clean.fastq.gz.json 
+fastp v0.23.4, time used: 34 seconds
+2030_57_O_R1.fastq.gz 2030_57_O_R2.fastq.gz
+2030_57_O_R1_clean.fastq.gz 2030_57_O_R2_clean.fastq.gz
+fastp.sh: line 39: i: command not found
+Detecting adapter sequence for read1...
+No adapter detected for read1
+
+Detecting adapter sequence for read2...
+No adapter detected for read2
+
+Read1 before filtering:
+total reads: 2899184
+total bases: 437776784
+Q20 bases: 424938421(97.0674%)
+Q30 bases: 402778069(92.0054%)
+
+Read2 before filtering:
+total reads: 2899184
+total bases: 437776784
+Q20 bases: 418359105(95.5645%)
+Q30 bases: 390649420(89.2348%)
+
+Read1 after filtering:
+total reads: 2789659
+total bases: 401103910
+Q20 bases: 393080615(97.9997%)
+Q30 bases: 374616303(93.3963%)
+
+Read2 after filtering:
+total reads: 2789659
+total bases: 398375429
+Q20 bases: 386961079(97.1348%)
+Q30 bases: 363816406(91.325%)
+
+Filtering result:
+reads passed filter: 5579318
+reads failed due to low quality: 3294
+reads failed due to too many N: 382
+reads failed due to too short: 215374
+reads with adapter trimmed: 32054
+bases trimmed due to adapters: 887546
+
+Duplication rate: 21.8324%
+
+Insert size peak (evaluated by paired-end reads): 156
+
+JSON report: /users/m/n/mnouriai/myresults/fastqc/2030_57_O_R1_clean.fastq.gz.json
+HTML report: /users/m/n/mnouriai/myresults/fastqc/2030_57_O_R1_clean.fastq.gz.html
+
+/data/popgen/fastp -i 2030_57_O_R1.fastq.gz -I 2030_57_O_R2.fastq.gz -o cleanreads/2030_57_O_R1_clean.fastq.gz -O cleanreads/2030_57_O_R2_clean.fastq.gz --detect_adapter_for_pe --trim_front1 5 --trim_poly_g --thread 1 --cut_right --cut_window_size 6 --qualified_quality_phred 20 --length_required 35 --html /users/m/n/mnouriai/myresults/fastqc/2030_57_O_R1_clean.fastq.gz.html --json /users/m/n/mnouriai/myresults/fastqc/2030_57_O_R1_clean.fastq.gz.json 
+fastp v0.23.4, time used: 41 seconds
+2030_58_K_R1.fastq.gz 2030_58_K_R2.fastq.gz
+2030_58_K_R1_clean.fastq.gz 2030_58_K_R2_clean.fastq.gz
+fastp.sh: line 39: i: command not found
+Detecting adapter sequence for read1...
+No adapter detected for read1
+
+Detecting adapter sequence for read2...
+No adapter detected for read2
+
+Read1 before filtering:
+total reads: 1958992
+total bases: 295807792
+Q20 bases: 286891761(96.9859%)
+Q30 bases: 271725053(91.8587%)
+
+Read2 before filtering:
+total reads: 1958992
+total bases: 295807792
+Q20 bases: 282529234(95.5111%)
+Q30 bases: 263832802(89.1906%)
+
+Read1 after filtering:
+total reads: 1881887
+total bases: 270392172
+Q20 bases: 264869108(97.9574%)
+Q30 bases: 252282224(93.3023%)
+
+Read2 after filtering:
+total reads: 1881887
+total bases: 268783320
+Q20 bases: 261115513(97.1472%)
+Q30 bases: 245562624(91.3608%)
+
+Filtering result:
+reads passed filter: 3763774
+reads failed due to low quality: 2298
+reads failed due to too many N: 248
+reads failed due to too short: 151664
+reads with adapter trimmed: 23602
+bases trimmed due to adapters: 665859
+
+Duplication rate: 17.5418%
+
+Insert size peak (evaluated by paired-end reads): 156
+
+JSON report: /users/m/n/mnouriai/myresults/fastqc/2030_58_K_R1_clean.fastq.gz.json
+HTML report: /users/m/n/mnouriai/myresults/fastqc/2030_58_K_R1_clean.fastq.gz.html
+
+/data/popgen/fastp -i 2030_58_K_R1.fastq.gz -I 2030_58_K_R2.fastq.gz -o cleanreads/2030_58_K_R1_clean.fastq.gz -O cleanreads/2030_58_K_R2_clean.fastq.gz --detect_adapter_for_pe --trim_front1 5 --trim_poly_g --thread 1 --cut_right --cut_window_size 6 --qualified_quality_phred 20 --length_required 35 --html /users/m/n/mnouriai/myresults/fastqc/2030_58_K_R1_clean.fastq.gz.html --json /users/m/n/mnouriai/myresults/fastqc/2030_58_K_R1_clean.fastq.gz.json 
+fastp v0.23.4, time used: 31 seconds
+2030_59_N_R1.fastq.gz 2030_59_N_R2.fastq.gz
+2030_59_N_R1_clean.fastq.gz 2030_59_N_R2_clean.fastq.gz
+fastp.sh: line 39: i: command not found
+Detecting adapter sequence for read1...
+>Illumina TruSeq Adapter Read 1
+AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+
+Detecting adapter sequence for read2...
+>Illumina TruSeq Adapter Read 2
+AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+
+Read1 before filtering:
+total reads: 2075088
+total bases: 313338288
+Q20 bases: 304022101(97.0268%)
+Q30 bases: 288159737(91.9644%)
+
+Read2 before filtering:
+total reads: 2075088
+total bases: 313338288
+Q20 bases: 299862231(95.6992%)
+Q30 bases: 281074948(89.7034%)
+
+Read1 after filtering:
+total reads: 1990224
+total bases: 285694472
+Q20 bases: 279941169(97.9862%)
+Q30 bases: 266769324(93.3757%)
+
+Read2 after filtering:
+total reads: 1990224
+total bases: 284677759
+Q20 bases: 277293792(97.4062%)
+Q30 bases: 261760961(91.9499%)
+
+Filtering result:
+reads passed filter: 3980448
+reads failed due to low quality: 2394
+reads failed due to too many N: 266
+reads failed due to too short: 167068
+reads with adapter trimmed: 46195
+bases trimmed due to adapters: 1106392
+
+Duplication rate: 20.1686%
+
+Insert size peak (evaluated by paired-end reads): 156
+
+JSON report: /users/m/n/mnouriai/myresults/fastqc/2030_59_N_R1_clean.fastq.gz.json
+HTML report: /users/m/n/mnouriai/myresults/fastqc/2030_59_N_R1_clean.fastq.gz.html
+
+/data/popgen/fastp -i 2030_59_N_R1.fastq.gz -I 2030_59_N_R2.fastq.gz -o cleanreads/2030_59_N_R1_clean.fastq.gz -O cleanreads/2030_59_N_R2_clean.fastq.gz --detect_adapter_for_pe --trim_front1 5 --trim_poly_g --thread 1 --cut_right --cut_window_size 6 --qualified_quality_phred 20 --length_required 35 --html /users/m/n/mnouriai/myresults/fastqc/2030_59_N_R1_clean.fastq.gz.html --json /users/m/n/mnouriai/myresults/fastqc/2030_59_N_R1_clean.fastq.gz.json 
+fastp v0.23.4, time used: 34 seconds
+2030_60_L_R1.fastq.gz 2030_60_L_R2.fastq.gz
+2030_60_L_R1_clean.fastq.gz 2030_60_L_R2_clean.fastq.gz
+fastp.sh: line 39: i: command not found
+Detecting adapter sequence for read1...
+>Illumina TruSeq Adapter Read 1
+AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+
+Detecting adapter sequence for read2...
+>Illumina TruSeq Adapter Read 2
+AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+
+Read1 before filtering:
+total reads: 1576885
+total bases: 238109635
+Q20 bases: 230952629(96.9942%)
+Q30 bases: 218814112(91.8964%)
+
+Read2 before filtering:
+total reads: 1576885
+total bases: 238109635
+Q20 bases: 227797902(95.6693%)
+Q30 bases: 213146374(89.5161%)
+
+Read1 after filtering:
+total reads: 1515107
+total bases: 217391330
+Q20 bases: 212979785(97.9707%)
+Q30 bases: 202900240(93.3341%)
+
+Read2 after filtering:
+total reads: 1515107
+total bases: 216496092
+Q20 bases: 210633484(97.292%)
+Q30 bases: 198445668(91.6625%)
+
+Filtering result:
+reads passed filter: 3030214
+reads failed due to low quality: 1724
+reads failed due to too many N: 212
+reads failed due to too short: 121620
+reads with adapter trimmed: 38743
+bases trimmed due to adapters: 943335
+
+Duplication rate: 17.3851%
+
+Insert size peak (evaluated by paired-end reads): 156
+
+JSON report: /users/m/n/mnouriai/myresults/fastqc/2030_60_L_R1_clean.fastq.gz.json
+HTML report: /users/m/n/mnouriai/myresults/fastqc/2030_60_L_R1_clean.fastq.gz.html
+
+/data/popgen/fastp -i 2030_60_L_R1.fastq.gz -I 2030_60_L_R2.fastq.gz -o cleanreads/2030_60_L_R1_clean.fastq.gz -O cleanreads/2030_60_L_R2_clean.fastq.gz --detect_adapter_for_pe --trim_front1 5 --trim_poly_g --thread 1 --cut_right --cut_window_size 6 --qualified_quality_phred 20 --length_required 35 --html /users/m/n/mnouriai/myresults/fastqc/2030_60_L_R1_clean.fastq.gz.html --json /users/m/n/mnouriai/myresults/fastqc/2030_60_L_R1_clean.fastq.gz.json 
+fastp v0.23.4, time used: 26 seconds
+[mnouriai@ecogen myscripts]$ ne
+needs-restarting    netstat             newaliases.postfix  newgrp              newusers            
+neqn                newaliases          newgidmap           newuidmap           
+[mnouriai@ecogen myscripts]$ ll /netfiles/ecogen/PopulationGenomics/scripts/
+total 56
+-rw-r--r-x+ 1 srkeller pb381adm 1305 Sep 13 00:17 fastp.sh
+-rwxr--r-x+ 1 srkeller pb381adm  920 Sep 13 00:18 mapping.sh
+[mnouriai@ecogen myscripts]$ cp /netfiles/ecogen/PopulationGenomics/scripts/mapping.sh ~/myscripts
+[mnouriai@ecogen myscripts]$ ~/myscripts/
+-bash: /users/m/n/mnouriai/myscripts/: Is a directory
+[mnouriai@ecogen myscripts]$ cd ~/myscripts/
+[mnouriai@ecogen myscripts]$ ll
+total 8
+-rw-r--r-x. 1 mnouriai users 1660 Sep 13 11:06 fastp.sh
+-rwxr--r-x. 1 mnouriai users  920 Sep 13 11:24 mapping.sh
+[mnouriai@ecogen myscripts]$ vim mapping.sh
+[mnouriai@ecogen myscripts]$ screen
+-bash: screen: command not found
+[mnouriai@ecogen myscripts]$ bash mapping.sh
+@ Aligning 2030_1_F...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_3_H...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_4_J...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_56_O...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_57_O...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_58_K...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_59_N...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_60_L...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+[mnouriai@ecogen myscripts]$ bash mapping.sh &
+[1] 1523155
+[mnouriai@ecogen myscripts]$ @ Aligning 2030_1_F...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_3_H...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_4_J...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_56_O...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_57_O...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_58_K...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_59_N...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_60_L...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+^C
+[1]+  Exit 127                bash mapping.sh
+[mnouriai@ecogen myscripts]$ bash mapping.sh &
+[1] 1523806
+[mnouriai@ecogen myscripts]$ @ Aligning 2030_1_F...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_3_H...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_4_J...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_56_O...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_57_O...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_58_K...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_59_N...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_60_L...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+^C
+[1]+  Exit 127                bash mapping.sh
+[mnouriai@ecogen myscripts]$ ll
+total 8
+-rw-r--r-x. 1 mnouriai users 1660 Sep 13 11:06 fastp.sh
+-rwxr--r-x. 1 mnouriai users 1135 Sep 13 11:32 mapping.sh
+[mnouriai@ecogen myscripts]$ vim mapping.sh 
+[mnouriai@ecogen myscripts]$ bash mapping.sh &
+[1] 1524010
+[mnouriai@ecogen myscripts]$ @ Aligning 2030_1_F...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_3_H...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_4_J...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_56_O...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_57_O...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_58_K...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_59_N...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+@ Aligning 2030_60_L...
+mapping.sh: line 36: i: command not found
+mapping.sh: line 37: 20/data/popgen/bwa-mem2/bwa-mem2: No such file or directory
+^C
+[1]+  Exit 127                bash mapping.sh
+[mnouriai@ecogen myscripts]$ vim  mapping.sh 
+[mnouriai@ecogen myscripts]$ bash mapping.sh &
+[1] 1524202
+[mnouriai@ecogen myscripts]$ @ Aligning 2030_1_F...
+Looking to launch executable "/data/popgen/bwa-mem2/bwa-mem2.avx2", simd = .avx2
+Launching executable "/data/popgen/bwa-mem2/bwa-mem2.avx2"
+-----------------------------
+Executing in AVX2 mode!!
+-----------------------------
+* SA compression enabled with xfactor: 8
+* Ref file: /netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa
+* Entering FMI_search
+* Index file found. Loading index from /netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa.bwt.2bit.64
+* Reference seq len for bi-index = 1376182455
+* sentinel-index: 431332002
+* Count:
+0,	1
+1,	427302946
+2,	688091228
+3,	948879510
+4,	1376182455
+
+* Reading other elements of the index from files /netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa
+* Index prefix: /netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa
+* Read 0 ALT contigs
+* Done reading Index!!
+* Reading reference genome..
+* Binary seq file = /netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa.0123
+* Reference genome size: 1376182454 bp
+* Done reading reference genome !!
+
+------------------------------------------
+1. Memory pre-allocation for Chaining: 139.3584 MB
+2. Memory pre-allocation for BSW: 239.6170 MB
+3. Memory pre-allocation for BWT: 77.3142 MB
+------------------------------------------
+* Threads used (compute): 1
+* No. of pipeline threads: 2
+
+[0000] read_chunk: 10000000, work_chunk_size: 10000103, nseq: 69640
+	[0000][ M::kt_pipeline] read 69640 sequences (10000103 bp)...
+[0000] Reallocating initial memory allocations!!
+[0000] Calling mem_process_seqs.., task: 0
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000009, nseq: 69640
+	[0000][ M::kt_pipeline] read 69640 sequences (10000009 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69640
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (0, 12835, 16, 1)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (313, 383, 467)
+[0000][PE] low and high boundaries for computing mean and std.dev: (5, 775)
+[0000][PE] mean and std.dev: (390.82, 119.59)
+[0000][PE] low and high boundaries for proper pairs: (1, 929)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (300, 3117, 5486)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 15858)
+[0000][PE] mean and std.dev: (2907.06, 2816.47)
+[0000][PE] low and high boundaries for proper pairs: (1, 21044)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69640 reads in 14.941 CPU sec, 14.898 real sec
+[0000] Calling mem_process_seqs.., task: 1
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000005, nseq: 69632
+	[0000][ M::kt_pipeline] read 69632 sequences (10000005 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69640
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (0, 12953, 16, 1)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (312, 380, 464)
+[0000][PE] low and high boundaries for computing mean and std.dev: (8, 768)
+[0000][PE] mean and std.dev: (388.40, 118.41)
+[0000][PE] low and high boundaries for proper pairs: (1, 920)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (675, 1558, 3093)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 7929)
+[0000][PE] mean and std.dev: (1801.62, 1769.78)
+[0000][PE] low and high boundaries for proper pairs: (1, 10347)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69640 reads in 15.215 CPU sec, 15.147 real sec
+[0000] Calling mem_process_seqs.., task: 2
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000094, nseq: 69660
+	[0000][ M::kt_pipeline] read 69660 sequences (10000094 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69632
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (3, 13048, 15, 2)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (308, 381, 466)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 782)
+[0000][PE] mean and std.dev: (388.72, 121.53)
+[0000][PE] low and high boundaries for proper pairs: (1, 940)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (238, 2737, 6488)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 18988)
+[0000][PE] mean and std.dev: (3089.27, 2831.25)
+[0000][PE] low and high boundaries for proper pairs: (1, 25238)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69632 reads in 15.137 CPU sec, 15.079 real sec
+[0000] Reallocating initial memory allocations!!
+[0000] Calling mem_process_seqs.., task: 3
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000273, nseq: 69568
+	[0000][ M::kt_pipeline] read 69568 sequences (10000273 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69660
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (1, 13111, 18, 3)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (314, 388, 472)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 788)
+[0000][PE] mean and std.dev: (394.69, 120.30)
+[0000][PE] low and high boundaries for proper pairs: (1, 946)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (2592, 5457, 6504)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 14328)
+[0000][PE] mean and std.dev: (4467.78, 2534.36)
+[0000][PE] low and high boundaries for proper pairs: (1, 18240)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69660 reads in 14.892 CPU sec, 14.831 real sec
+[0000] Calling mem_process_seqs.., task: 4
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000228, nseq: 69604
+	[0000][ M::kt_pipeline] read 69604 sequences (10000228 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69568
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (3, 13097, 11, 3)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (312, 385, 469)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 783)
+[0000][PE] mean and std.dev: (392.09, 119.68)
+[0000][PE] low and high boundaries for proper pairs: (1, 940)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (3258, 5393, 6881)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 14127)
+[0000][PE] mean and std.dev: (4705.45, 3029.66)
+[0000][PE] low and high boundaries for proper pairs: (1, 17750)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69568 reads in 15.033 CPU sec, 14.967 real sec
+[0000] Calling mem_process_seqs.., task: 5
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000002, nseq: 69594
+	[0000][ M::kt_pipeline] read 69594 sequences (10000002 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69604
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (2, 12831, 10, 1)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (316, 389, 475)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 793)
+[0000][PE] mean and std.dev: (395.78, 122.01)
+[0000][PE] low and high boundaries for proper pairs: (1, 952)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (695, 4170, 7093)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 19889)
+[0000][PE] mean and std.dev: (4157.90, 3170.32)
+[0000][PE] low and high boundaries for proper pairs: (1, 26287)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69604 reads in 15.265 CPU sec, 15.209 real sec
+[0000] Calling mem_process_seqs.., task: 6
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000033, nseq: 69584
+	[0000][ M::kt_pipeline] read 69584 sequences (10000033 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69594
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (2, 12885, 13, 2)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (312, 386, 470)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 786)
+[0000][PE] mean and std.dev: (392.59, 120.88)
+[0000][PE] low and high boundaries for proper pairs: (1, 944)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (165, 516, 6823)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 20139)
+[0000][PE] mean and std.dev: (2531.46, 3156.26)
+[0000][PE] low and high boundaries for proper pairs: (1, 26797)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69594 reads in 15.300 CPU sec, 15.246 real sec
+[0000] Calling mem_process_seqs.., task: 7
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000150, nseq: 69604
+	[0000][ M::kt_pipeline] read 69604 sequences (10000150 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69584
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (1, 13219, 12, 2)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (313, 387, 471)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 787)
+[0000][PE] mean and std.dev: (393.42, 121.97)
+[0000][PE] low and high boundaries for proper pairs: (1, 945)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (1109, 2128, 3224)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 7454)
+[0000][PE] mean and std.dev: (2147.00, 1661.42)
+[0000][PE] low and high boundaries for proper pairs: (1, 9569)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69584 reads in 14.282 CPU sec, 14.212 real sec
+[0000] Calling mem_process_seqs.., task: 8
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000180, nseq: 69570
+	[0000][ M::kt_pipeline] read 69570 sequences (10000180 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69604
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (2, 13221, 16, 2)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (316, 388, 472)
+[0000][PE] low and high boundaries for computing mean and std.dev: (4, 784)
+[0000][PE] mean and std.dev: (394.88, 121.08)
+[0000][PE] low and high boundaries for proper pairs: (1, 940)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (1859, 4084, 6964)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 17174)
+[0000][PE] mean and std.dev: (4336.69, 3172.93)
+[0000][PE] low and high boundaries for proper pairs: (1, 22279)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69604 reads in 14.969 CPU sec, 14.896 real sec
+[0000] Calling mem_process_seqs.., task: 9
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000243, nseq: 69640
+	[0000][ M::kt_pipeline] read 69640 sequences (10000243 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69570
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (2, 12883, 16, 2)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (311, 384, 469)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 785)
+[0000][PE] mean and std.dev: (391.42, 121.23)
+[0000][PE] low and high boundaries for proper pairs: (1, 943)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (2832, 4919, 8038)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 18450)
+[0000][PE] mean and std.dev: (4851.69, 3310.21)
+[0000][PE] low and high boundaries for proper pairs: (1, 23656)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69570 reads in 14.662 CPU sec, 14.583 real sec
+[0000] Calling mem_process_seqs.., task: 10
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000009, nseq: 69618
+	[0000][ M::kt_pipeline] read 69618 sequences (10000009 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69640
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (1, 13096, 16, 1)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (311, 385, 469)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 785)
+[0000][PE] mean and std.dev: (391.47, 120.98)
+[0000][PE] low and high boundaries for proper pairs: (1, 943)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (1489, 2683, 6500)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 16522)
+[0000][PE] mean and std.dev: (3266.50, 2686.71)
+[0000][PE] low and high boundaries for proper pairs: (1, 21533)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69640 reads in 14.920 CPU sec, 14.856 real sec
+[0000] Calling mem_process_seqs.., task: 11
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000000, nseq: 69618
+	[0000][ M::kt_pipeline] read 69618 sequences (10000000 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69618
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (2, 12880, 13, 5)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (316, 389, 471)
+[0000][PE] low and high boundaries for computing mean and std.dev: (6, 781)
+[0000][PE] mean and std.dev: (395.05, 119.55)
+[0000][PE] low and high boundaries for proper pairs: (1, 936)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (150, 1109, 6823)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 20169)
+[0000][PE] mean and std.dev: (2739.38, 2940.94)
+[0000][PE] low and high boundaries for proper pairs: (1, 26842)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69618 reads in 14.861 CPU sec, 14.784 real sec
+[0000] Calling mem_process_seqs.., task: 12
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000147, nseq: 69612
+	[0000][ M::kt_pipeline] read 69612 sequences (10000147 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69618
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (2, 13138, 18, 1)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (313, 387, 469)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 781)
+[0000][PE] mean and std.dev: (392.54, 120.29)
+[0000][PE] low and high boundaries for proper pairs: (1, 937)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (511, 4430, 7842)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 22504)
+[0000][PE] mean and std.dev: (4053.00, 3464.62)
+[0000][PE] low and high boundaries for proper pairs: (1, 29835)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69618 reads in 15.161 CPU sec, 15.096 real sec
+[0000] Calling mem_process_seqs.., task: 13
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000187, nseq: 69588
+	[0000][ M::kt_pipeline] read 69588 sequences (10000187 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69612
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (1, 13128, 13, 7)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (311, 385, 467)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 779)
+[0000][PE] mean and std.dev: (390.75, 119.33)
+[0000][PE] low and high boundaries for proper pairs: (1, 935)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (3803, 6207, 7941)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 16217)
+[0000][PE] mean and std.dev: (5134.62, 3021.93)
+[0000][PE] low and high boundaries for proper pairs: (1, 20355)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+	[0000][ M::mem_process_seqs] Processed 69612 reads in 14.602 CPU sec, 14.535 real sec
+[0000] Calling mem_process_seqs.., task: 14
+[0000] 1. Calling kt_for - worker_bwt
+[0000] read_chunk: 10000000, work_chunk_size: 10000063, nseq: 69596
+	[0000][ M::kt_pipeline] read 69596 sequences (10000063 bp)...
+[0000] 2. Calling kt_for - worker_aln
+[0000] Inferring insert size distribution of PE reads from data, l_pac: 688091227, n: 69588
+[0000][PE] # candidate unique pairs for (FF, FR, RF, RR): (2, 13101, 18, 3)
+[0000][PE] skip orientation FF as there are not enough pairs
+[0000][PE] analyzing insert size distribution for orientation FR...
+[0000][PE] (25, 50, 75) percentile: (312, 385, 470)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 786)
+[0000][PE] mean and std.dev: (392.61, 121.05)
+[0000][PE] low and high boundaries for proper pairs: (1, 944)
+[0000][PE] analyzing insert size distribution for orientation RF...
+[0000][PE] (25, 50, 75) percentile: (140, 2598, 6812)
+[0000][PE] low and high boundaries for computing mean and std.dev: (1, 20156)
+[0000][PE] mean and std.dev: (3246.28, 3085.33)
+[0000][PE] low and high boundaries for proper pairs: (1, 26828)
+[0000][PE] skip orientation RR as there are not enough pairs
+[0000][PE] skip orientation RF
+[0000] 3. Calling kt_for - worker_sam
+client_loop: send disconnect: Broken pipe
+maryamnouri-aiin@ip0af52631 ~ % ll 2030*sam
+zsh: no matches found: 2030*sam
+maryamnouri-aiin@ip0af52631 ~ % cd ~/myscripts/
+cd: no such file or directory: /Users/maryamnouri-aiin/myscripts/
+maryamnouri-aiin@ip0af52631 ~ % tmux
+zsh: command not found: tmux
+maryamnouri-aiin@ip0af52631 ~ % bash mapping.sh
+bash: mapping.sh: No such file or directory
+maryamnouri-aiin@ip0af52631 ~ % ll
+zsh: command not found: ll
+maryamnouri-aiin@ip0af52631 ~ % cd
+maryamnouri-aiin@ip0af52631 ~ % cd ~/myscripts/
+cd: no such file or directory: /Users/maryamnouri-aiin/myscripts/
+maryamnouri-aiin@ip0af52631 ~ % tmux
+zsh: command not found: tmux
+maryamnouri-aiin@ip0af52631 ~ % 

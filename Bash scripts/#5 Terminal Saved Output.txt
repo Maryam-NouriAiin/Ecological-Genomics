@@ -1,0 +1,168 @@
+Last login: Mon Sep 25 10:03:23 on ttys000
+maryamnouri-aiin@ip0af52039 ~ % ssh mnouriai@ecogen.uvm.edu
+mnouriai@ecogen.uvm.edu's password: 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+                        RHEL 9
+                        ecogen.uvm.edu 
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+Last login: Mon Sep 25 10:03:45 2023 from 10.245.32.57
+[mnouriai@ecogen ~]$ cd myscripts
+[mnouriai@ecogen myscripts]$ vim ANGSD_doTheta.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[mnouriai@ecogen myscripts]$ ANGSDANGSD_doTheta.sh
+-bash: ANGSDANGSD_doTheta.sh: command not found
+[mnouriai@ecogen myscripts]$ ANGSD_doTheta.sh
+-bash: ANGSD_doTheta.sh: command not found
+[mnouriai@ecogen myscripts]$ ll
+total 24
+-rw-r--r--. 1 mnouriai users  352 Sep 25 10:47 ANGSD_doTheta.sh
+-rw-r--r--. 1 mnouriai users  958 Sep 20 11:31 ANGSD.sh
+-rw-r--r--. 1 mnouriai users    0 Sep 20 10:35 bam.stats.sh
+-rw-r--r-x. 1 mnouriai users 2054 Sep 20 10:51 bam_stats.sh
+-rw-r--r-x. 1 mnouriai users 1660 Sep 13 11:06 fastp.sh
+-rwxr--r-x. 1 mnouriai users 1135 Sep 13 11:40 mapping.sh
+-rw-r--r-x. 1 mnouriai users  744 Sep 18 11:19 process_bam.sh
+[mnouriai@ecogen myscripts]$ tmux
+[detached (from session 3)]
+[mnouriai@ecogen myscripts]$ vim ANGSD_doTheta.sh 
+[mnouriai@ecogen myscripts]$ tmux
+[detached (from session 4)]
+[mnouriai@ecogen myscripts]$ tmux attach_session
+unknown command: attach_session
+[mnouriai@ecogen myscripts]$ tmux attach-session 
+[detached (from session 4)]
+[mnouriai@ecogen myscripts]$ ll ../myresults/ANGSD
+total 1969232
+-rw-r--r--. 1 mnouriai users       7393 Sep 20 11:44 2030_.arg
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:24 2030_bam.list
+-rw-r--r--. 1 mnouriai users          0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 1412264131 Sep 20 11:44 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    1085922 Sep 20 11:44 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users   79446980 Sep 20 11:44 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users        197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users  518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users     980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users    3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+[mnouriai@ecogen myscripts]$ AnGSD
+-bash: AnGSD: command not found
+[mnouriai@ecogen myscripts]$ ANGSD
+	-> angsd version: 0.931-14-gb9c8ddd (htslib: 1.10.2-19-gecf0216) build(Feb  2 2020 10:28:09)
+
+	-> angsd version: 0.931-14-gb9c8ddd (htslib: 1.10.2-19-gecf0216) build(Feb  2 2020 10:28:09)
+	-> Please use the website "http://www.popgen.dk/angsd" as reference
+	-> Use -nThreads or -P for number of threads allocated to the program
+Overview of methods:
+	-GL		Estimate genotype likelihoods
+	-doCounts	Calculate various counts statistics
+	-doAsso		Perform association study
+	-doMaf		Estimate allele frequencies
+	-doError	Estimate the type specific error rates
+	-doAncError	Estimate the errorrate based on perfect fastas
+	-HWE_pval	Est inbreedning per site or use as filter
+	-doGeno		Call genotypes
+	-doFasta	Generate a fasta for a BAM file
+	-doAbbababa	Perform an ABBA-BABA test
+	-sites		Analyse specific sites (can force major/minor)
+	-doSaf		Estimate the SFS and/or neutrality tests genotype calling
+	-doHetPlas	Estimate hetplasmy by calculating a pooled haploid frequency
+
+	Below are options that can be usefull
+	-bam		Options relating to bam reading
+	-doMajorMinor	Infer the major/minor using different approaches
+	-ref/-anc	Read reference or ancestral genome
+	-doSNPstat	Calculate various SNPstat
+	-cigstat	Printout CIGAR stat across readlength
+	many others
+
+Output files:
+	 In general the specific analysis outputs specific files, but we support basic bcf output
+	-doBcf		Wrapper around -dopost -domajorminor -dofreq -gl -dovcf docounts
+For information of specific options type: 
+	./angsd METHODNAME eg 
+		./angsd -GL
+		./angsd -doMaf
+		./angsd -doAsso etc
+		./angsd sites for information about indexing -sites files
+Examples:
+	Estimate MAF for bam files in 'list'
+		'./angsd -bam list -GL 2 -doMaf 2 -out RES -doMajorMinor 1'
+[mnouriai@ecogen myscripts]$ cd ANGSD
+-bash: cd: ANGSD: No such file or directory
+[mnouriai@ecogen myscripts]$ cd /myscripts
+-bash: cd: /myscripts: No such file or directory
+[mnouriai@ecogen myscripts]$ ll
+total 24
+-rw-r--r--. 1 mnouriai users  599 Sep 25 10:57 ANGSD_doTheta.sh
+-rw-r--r--. 1 mnouriai users  958 Sep 20 11:31 ANGSD.sh
+-rw-r--r--. 1 mnouriai users    0 Sep 20 10:35 bam.stats.sh
+-rw-r--r-x. 1 mnouriai users 2054 Sep 20 10:51 bam_stats.sh
+-rw-r--r-x. 1 mnouriai users 1660 Sep 13 11:06 fastp.sh
+-rwxr--r-x. 1 mnouriai users 1135 Sep 13 11:40 mapping.sh
+-rw-r--r-x. 1 mnouriai users  744 Sep 18 11:19 process_bam.sh
+[mnouriai@ecogen myscripts]$ ANGSD_doTheta.sh
+-bash: ANGSD_doTheta.sh: command not found
+[mnouriai@ecogen myscripts]$ cd ANGSD
+-bash: cd: ANGSD: No such file or directory
+[mnouriai@ecogen myscripts]$ cd myresults
+-bash: cd: myresults: No such file or directory
+[mnouriai@ecogen myscripts]$ cd ~/myresults/
+[mnouriai@ecogen myresults]$ cd ANGSD/
+[mnouriai@ecogen ANGSD]$ head 2030_2030_.thetas.idx.pestPG
+head: cannot open '2030_2030_.thetas.idx.pestPG' for reading: No such file or directory
+[mnouriai@ecogen ANGSD]$ man cut
+[mnouriai@ecogen ANGSD]$ cut -f2-5,9,14, 2030_.thetas.idx.pestPG >2030_.thetas
+cut: fields are numbered from 1
+Try 'cut --help' for more information.
+[mnouriai@ecogen ANGSD]$ cut -f2-5,9,14, 2030_.thetas.idx.pestPG >2030_.thetas
+cut: fields are numbered from 1
+Try 'cut --help' for more information.
+[mnouriai@ecogen ANGSD]$ cut -f2-5,9,14 2030_.thetas.idx.pestPG >2030_.thetas
+[mnouriai@ecogen ANGSD]$ ll
+total 1970472
+-rw-r--r--. 1 mnouriai users       7393 Sep 20 11:44 2030_.arg
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:32 2030_bam.lis
+-rw-r--r--. 1 mnouriai users        765 Sep 20 11:24 2030_bam.list
+-rw-r--r--. 1 mnouriai users          0 Sep 25 10:49 2030_cf.sfs
+-rw-r--r--. 1 mnouriai users 1412264131 Sep 20 11:44 2030_.saf.gz
+-rw-r--r--. 1 mnouriai users    1085922 Sep 20 11:44 2030_.saf.idx
+-rw-r--r--. 1 mnouriai users   79446980 Sep 20 11:44 2030_.saf.pos.gz
+-rw-r--r--. 1 mnouriai users        197 Sep 25 10:54 2030_.sfs
+-rw-r--r--. 1 mnouriai users    1268967 Sep 25 11:14 2030_.thetas
+-rw-r--r--. 1 mnouriai users  518984521 Sep 25 11:00 2030_.thetas.gz
+-rw-r--r--. 1 mnouriai users     980690 Sep 25 11:00 2030_.thetas.idx
+-rw-r--r--. 1 mnouriai users    3691895 Sep 25 11:00 2030_.thetas.idx.pestPG
+[mnouriai@ecogen ANGSD]$ 
