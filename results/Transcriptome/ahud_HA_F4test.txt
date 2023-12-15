@@ -1,0 +1,3 @@
+HA_F4_Rep1_	HA_F4_Rep1_	/data/project_data/RNAseq/cleandata/HA_F4_Rep1_1_clean.fq.gz	/data/project_data/RNAseq/cleandata/HA_F4_Rep1_2_clean.fq.gz
+HA_F4_Rep2_	HA_F4_Rep2_	/data/project_data/RNAseq/cleandata/HA_F4_Rep2_1_clean.fq.gz	/data/project_data/RNAseq/cleandata/HA_F4_Rep2_2_clean.fq.gz
+HA_F4_Rep3_	HA_F4_Rep3_	/data/project_data/RNAseq/cleandata/HA_F4_Rep3_1_clean.fq.gz	/data/project_data/RNAseq/cleandata/HA_F4_Rep3_2_clean.fq.gz

@@ -1,0 +1,7 @@
+/data/popgen/trinityrnaseq-v2.13.2/util/align_and_estimate_abundance.pl --transcripts /data/project_data/RNAseq/assembly/ahud_Trinity.fasta \
+--seqType fq \
+--samples_file ~/mydata/ahud_AH_F4test.txt \
+--est_method salmon \
+--output_dir /data/project_data/RNAseq/mapping \
+--thread_count 1 \
+--trinity_mode
