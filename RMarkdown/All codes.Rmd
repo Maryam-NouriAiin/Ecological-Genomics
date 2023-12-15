@@ -1,0 +1,4205 @@
+---
+title: "All codes"
+output: 
+  html_document:
+    code_folding: show
+    theme:
+      bg: "black"
+      fg: "white"
+      primary: "rosybrown"
+      secondary: "thistle"
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Proza Libre
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+if (requireNamespace("thematic")) 
+  thematic::thematic_rmd(font = "auto")
+```
+
+## Bash & R
+
+## Codes {.tabset .tabset-pills}
+
+### Visualize
+
+```         
+path: /netfiles/ecogen/PopulationGenomics/fastq/red_spruce
+cd
+ll
+```
+
+Naming convention for spruce data set:
+<PopCode><RowID><ColumnID>\_<ReadDirection>.fast.gz
+
+***fastq file***: the standard sequence data format for NGS contains: -
+the sequence of the read - corresponding quality scores for each base -
+meta-data about the read
+
+*.gz*: compressed files (gzipped)
+
+*zact*: peek inside a file
+
+```         
+zcat 2505_9_C_R2.fastq.gz | head -n 4
+
+@A00354:455:HYG3FDSXY:1:1101:3893:1031 2:N:0:CATCAAGT+TACTCCTT
+GTGGAAAATCAAAACCCTAATGCTGAAAGGAATCCAAATCAAATAAATATTTTCACCGACCTGTTTCGATGCCAGAATTGTCTGCGCAGAAGACTCGTGAAATTTCGCCAGCAGGTAAAATTAAAAGGCTAGAATTAACCGCTGAAATGGA
++
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF:FFFF:FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF:F:F
+```
+
+Phred quality score: 10 1 in 10 90% 20 1 in 100 99% 30 1 in 1000 99.9%
+40 1 in 10,000 99.99%
+
+```         
+Quality encoding: !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHI
+                   |         |         |         |         |
+    Quality score: 0........10........20........30........40  
+```
+
+***FastQC program***: looks at the quality collectively across all reads
+in a sample
+
+cd back to our home directories: *\~/*
+
+### Making dictionaries
+
+Make 3 directories to store: data, scripts, and results
+
+```         
+mkdir mydata/
+mkdir myscripts/
+mkdir myresults/
+```
+
+To look which dictionary you are in: e.g.
+
+```         
+cd /myresults/
+pw
+#how it should look like 👇
+[kellrlab@ecogen myresults]$ pwd
+/users/k/e/kellrlab/myresults
+```
+
+Make a folder for outputs from our QC analysis
+
+```         
+mkdir fastqc/
+```
+
+### Visualize the quality of raw data (Program: FastQC)
+
+Run *FastQC* to look at the quality of our sequencing
+
+```         
+fastqc filename.fastq.gz -o outputdirectory/
+# generate an .html output file for each input file
+```
+
+### Filezilla
+
+Transfer the folder \~/myresults/fastqc/ over to your laptop
+Double-clicking the html outputs saved in your laptop to open a web
+browser
+
+### Clean & trim reads using **fastp**
+
+fastp program: clean the reads for each file, removing low quality bases
+and leftover Illumina sequence adapters from the sequences
+
+*Trimmomatic*: anothoer program for trimming, slower that *fastp*
+
+```         
+#fastp is installed on the server
+/data/popgen/fastp
+```
+
+### bash script containg aloop
+
+Writing a bash script that contains a **loop**
+
+Basic syntax of a bash loop: Use of variable assignment using *\${}*
+
+```         
+cd <path to the input data>
+
+for FILE in somelist
+do
+
+  command1 -options ${FILE} -moreOptions
+  command2 -options ${FILE} -moreOptions
+
+done
+```
+
+In the for loop: Variable of interest (FILE): \${FILE} Use the wildcard
+character (\*): call all files that include the ID code for your
+population and then pass those filenames in a loop to the commands
+
+write a loop that process all the R1 fastq files in the population of
+interest:
+
+```         
+MYPOP="2XXX"
+cd <path to the input data>
+for FILE in ${MYPOP}*R1.fastq.gz
+
+do
+
+  command1 -options ${FILE} -moreOptions
+  command2 -options ${FILE} -moreOptions
+
+done
+```
+
+Partially completed example script:
+
+1.  Make a copy of the script cp and put it into your *\~/myscripts*
+    directory
+2.  Open and edit your copied script using the program *vim vim
+    \~/myscripts/fastp.sh.*
+3.  Edit the file so that you're trimming the fastq files for the
+    population code assigned to you; you can add annotations as notes to
+    yourself using the hashtag (\#)
+4.  Save the file after you're done making changes. To do this, hit to
+    get out of *"Insert"* mode, then *:wq* This will write (w) the
+    changes to your file and then quit (q) vim.
+
+```         
+cp ~/myscripts
+vim ~/myscripts/fastp.sh
+:wq
+```
+
+fastp needs both read pairs (i.e., the R1 and R2 files). Create a
+mathcing R2 file name within the loop: name the output files adding
+"\_clean" to the end
+
+### Verify a file contents
+
+```         
+head
+cat
+vim
+```
+
+### Execute bash script for fastp.sh
+
+```         
+cd ~/myscripts/
+bash fastp.sh
+# output (the trimmed and cleaned reads) are saved in /netfiles/ecogen/PopulationGenomics/fastq_red_spruce/cleanreads
+```
+
+### Assess pre- and post trimming
+
+fastp: fast, produces a summary of the change in quality pre- and
+post-trimming. Like FastQC, the output is in an html file, use FileZilla
+to transfer back to our laptops and look at in a browser.
+
+### Mapping cleaned and trimmed reads against the reference genome
+
+Step 1: Downloading the reference genome using *wget* to ownload files
+from the web
+
+Step 2: subsetted the reference to include just the contigs that contain
+one or more probes from our exome capture experiment. For this, we did a
+BLAST search of each probe against the P. abies reference genome, and
+then retained all scaffolds that had a best hit. This reduced reference
+contains: 1,376,182,454 bp (\~1.38 Gbp) in 33,679 contigs The mean
+(median) contig size is 10.5 (12.9) kbp The N50 of the reduced reference
+is 101,375 bp
+
+Step 3:Writing several short scripts to optimize later Step 4. Using
+*bwa* as mapping program Step 5. Write a \*\*\*bash script called
+*mapping.sh* to call the R1 and R2 reads for each individual in the
+population, and uses the *bwa-mem2* algorithm to map reads to the
+reference genome. Step 6. Run *mapping.sh*
+
+bash mapping.sh Don't forget to detach from your screen!
+
+```         
+1.
+cd /netfiles/ecogen/PopulationGenomics/ref_genome
+wget "ftp://plantgenie.org:980/Data/PlantGenIE/Picea_abies/v1.0/fasta/GenomeAssemblies/Pabies01-genome.fa.gz"
+
+2.
+#The indexed reduced reference genome to use for your mapping is on our server here:
+/netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa
+
+3.
+MYPOP="XXXX"
+
+#Directory with the cleaned fastq files
+INPUT="/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads"
+
+#Output dir to store mapping files (bam)
+OUT="/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam"
+
+4 & 5.
+#bwa-mem2 command  into a loop to call all the fastq files for our population of interest
+/data/popgen/bwa-mem2/bwa-mem2 mem -t 1 ${REF} ${READ1} ${READ2} > ${OUT}${NAME}.sam
+where
+
+> t 1 is the number of threads, or computer cpus to use (in this case, just 1)
+> ${REF} specifies the path and filename for the reference genome
+> ${READ1} specifies the path and filename for the cleaned and trimmed R1 reads 
+> ${READ2} specifies the path and filename for the cleaned and trimmed R2 reads 
+> ${OUT}/${NAME}.sam  specifies the path and filenam for the .sam file to be saved into a new directory
+> Other bwa options detailed here: bwa manual page
+> Because you’re each mapping sequences from multiple samples (N=8/pop), it’s going to take a little while.
+
+6.
+
+tmux
+bash mapping.sh
+> detach from your screen!
+```
+
+### *tmux* , detach, & recover screen
+
+*tmux*:initiates a new shell window that won't interrupt or stop your
+work if you close your computer
+
+```         
+tmux
+```
+
+Detach from the screen hold the <control> key down while you hit the b
+key. Then release the <control> key and hit just the d key
+
+Recover your screen:
+
+```         
+tmux attach
+```
+
+### Visualize Sequence AlignMent Files (\*.sam)
+
+SAM file: a tab delimited text file, stores information about the
+alignment of reads in a *FASTQ* file to a reference genome or
+transcriptome. For each read in a FASTQ file, there's a line in the SAM
+file that includes:
+
+-   the read, aka. query, name,
+-   a FLAG (number with information about mapping success and
+    orientation and whether the read is the left or right read),
+-   the reference sequence name to which the read mapped
+-   the leftmost position in the reference where the read mapped
+-   the mapping quality (Phred-scaled)
+-   a CIGAR string that gives alignment information (how many bases
+    Match (M), where there's an Insertion (I) or Deletion (D))
+-   an '=', mate position, inferred insert size (columns 7,8,9),
+-   the query sequence and Phred-scaled quality from the FASTQ file
+    (columns 10 and 11),
+-   then Lots of good information in TAGS at the end, if the read
+    mapped, including whether it is a unique read (XT:A:U), the number
+    of best hits (X0:i:1), the number of suboptimal hits (X1:i:0).
+
+```         
+/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam/
+
+#head and tail.
+tail -n 100 FILENAME.sam
+```
+
+The left (R1) and right (R2) reads alternate through the file. SAM files
+usually have a header section with general information where each line
+starts with the '\@' symbol. SAM and BAM files contain the same
+information; SAM is human readable\
+BAM is in binary code and therefore has a smaller file size.
+
+Find the official Sequence AlignMent file documentation can be found
+{here}([https://en.wikipedia.org/wiki/SAM\_(file_format)](https://en.wikipedia.org/wiki/SAM_(file_format)){.uri})
+or more
+{officially}(<chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://samtools.github.io/hts-specs/SAMtags.pdf>).
+
+Some useful
+{FLAGs}(<https://www.seqanswers.com/forum/bioinformatics/bioinformatics-aa/14503-sam-flag-idioms?t=17314>)
+to know - for example what do the numbers in the second column of data
+mean?
+
+Here's a {SAM FLAG
+decoder}(<https://broadinstitute.github.io/picard/explain-flags.html>)
+by the Broad Institute.
+
+### Process mapping files using *samtools* and *sambamba*
+
+Process the mapping file \_sam to binary (\*.bam)\_, sort, and remove
+duplicate reads *sambamba*: manipulating sam/bam files related to
+*samtool*
+
+Calculate mapping statistics to assess quality of the result:
+
+1.  convert sam alignment file to (binary) bam format
+2.  sort the bam file by its read coordinates
+3.  mark and remove PCR duplicate reads
+4.  index the sorted, duplicate removed alignment for quick lookup
+
+```         
+sambamba view -S -f bam IN.sam -o OUT.bam
+sambamba flagstat FILENAME.bam
+```
+
+```         
+#customize this script:
+/netfiles/ecogen/PopulationGenomics/scripts/process_bams.sh
+
+#copy the script into _myscripts_ folder and _vim_:
+cp ~/myscripts
+vim
+
+#screen session:
+tmux
+
+#execute script:
+bash process_bams.sh
+@If you get an error that the script doesn’t exist, then either cd into the ~/myscripts directory before running your script, or incorporate the path into the file name when you give your bash command.
+
+#detach:
+<CTRL>+b then d
+
+#reattach:
+tmux attach-session
+```
+
+### Calculate mapping statistics to assess quality of the result
+
+-   Use *samtools* for manipulating sam/bam files
+-   *samtools* command *flagstat*: basic info on how well the mapping
+    worked
+-   Estimate *depth* of coverage (avg. number of reads/site): using the
+    samtools command depth
+-   Use both of these commands in *loops*: to assess the mapping stats
+    on each sample in our population.
+-   Use the *awk* tool: to help format the output.
+
+```         
+#script to get us started: 
+/netfiles/ecogen/PopulationGenomics/scripts/bam_stats.sh
+
+#take a look at one of our alignment files (sam or bam) using an integrated viewed in samtools called _tview_:
+samtools tview /netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam/XXXX_XX_X.sorted.rmdup.bam /netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa
+```
+
+### Genotype-free population genetics using genotype likelihoods
+
+-   A genotype likelihood (GL): the probability of observing the
+    sequencing data (reads containing a particular base), given the
+    genotype of the individual at that site.
+
+-   These probabilities are modeled explicitly in the calculation of
+    population diversty stats like Theta-pi, Tajima's D, Fst, PCA,
+    etc...; thus not throwing out any precious data, but also making
+    fewer assumptions about the true (unknown) genotype at each locus
+
+-   Use these approach with program 'ANGSD':'Analysis of Next Generation
+    Sequence Data'
+
+### ANGSD work flow
+
+-   Create a list of bam files for the samples you want to analyze
+-   Estimate genotype likelihoods (GL's) and allele frequencies after
+    filtering to minimize noise Use GL's to: -- estimate the site
+    frequency spectrum (SFS) -- estimate nucleotide diversities and
+    neutrality stats (Thetas, Tajima's D, ...)
+
+1.  Creat ANGSD.sh file
+
+```         
+~/myscripts 
+vim ANGSD.sh
+
+mkdir ~/myresults/ANGSD
+INPUT=""
+OUTPUT=~/myresults/ANGSD
+REF="/netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa"
+MYPOP=""
+ls ${INPUT}/${MYPOP}*sorted.rmdup.bam >${OUTPUT}/${MYPOP}_bam.list
+
+:wq
+ls 
+head
+cat
+vim
+```
+
+2.  Open ANGSD in vim
+
+-   Estimate your GL's and allele freqs, optionally filtering for base
+    and mapping quality, sequencing depth, SNP probability, minor allele
+    frequency, etc.
+
+```         
+# File suffix to distinguish analysis choices
+SUFFIX=""
+
+# Estimating GL's and allele frequencies for all sites with ANGSD
+
+######################
+
+ANGSD -b ${OUTPUT}/${MYPOP}_bam.list \
+-ref ${REF} -anc ${REF} \
+-out ${OUTPUT}/${MYPOP}_${SUFFIX} \
+-nThreads 1 \
+-remove_bads 1 \
+-C 50 \
+-baq 1 \
+-minMapQ 20 \
+-minQ 20 \
+-GL 1 \
+-doSaf 1 \
+##### below filters require `do-Counts`
+#-doCounts 1 \
+#-minInd 4 \
+#-setMinDepthInd 1 \
+#-setMaxDepthInd 40 \
+#-setMinDepth 10 \
+#-skipTriallelic 1 \
+#-doMajorMinor 1 \
+##### below filters require `doMaf`
+#-doMaf 1 \
+#-SNP_pval 1e-6 \
+#-minMaf 0.01
+
+###to restrict the estimation of the genotype likelihoods to a particular set of sites you’re interested in: add the option _-sites selected_sites.txt_ (tab delimited file with the position of the site in column 1 and the chromosome in column 2) or use _-rf selected_chromosome.chrs_ (if listing just the unique “chromosomes” or contigs you want to anlayze)
+###Some popgen stats you want to estimate only the polymorphic sites; for this you should include the -SNP_pval 1e-6 option to eliminate monomorphic sites when calculating your GL’s
+###There are good reasons to do it BOTH ways, with and without the __-SNP_pval 1e-6__ option. Keeping the monomorphic sites is essential for getting proper estimates of nucleotide diversity and Tajima’s D. But other analyses such as PCA or GWAS want only the SNPs.
+
+:wq
+```
+
+Option Description -nThreads: 1 how many cpus to use -- be conservative
+-remove_bads 1: remove reads flagged as 'bad' by samtools -C 50: enforce
+downgrading of map quality if contains excessive mismatches -baq 1:
+estimates base alignment qualities for bases around indels -minMapQ 20:
+threshold for minimum read mapping quality (Phred) -minQ 20: threshold
+for minimum base quality (Phred) -GL 1: calculate genotype likelihoods
+(GL) using the Samtools formula -doSaf 1: output allele frequency
+likelihoods for each site -doCounts 1: output allele counts for each
+site -minInd 4: min number of individuals to keep a site (see also ext 2
+filters) -setMinDepthInd 1: min read depth for an individual to count
+towards a site -setMaxDepthInd 40: max read depth for an individual to
+count towards a site -setMinDepth 10: min read depth across ALL
+individual to keep a site -skipTriallelic 1: don't use sites with \>2
+alleles -doMajorMinor 1: fix major and minor alleles the same across all
+samples -doMaf 1: calculate minor allele frequencies -SNP_pval 1e-6:
+Keep only site highly likely to be polymorphic (SNPs) -minMaf 0.01: Keep
+only sites with minor allele freq \> some proportion.
+
+3.  Create ANGSD_doTheta.sh to estimate the SFS and nucleotide diversity
+    stats Based on the saf.idx files from ANGSD GL calls: estimate the
+    Site Frequency Spectrum (SFS), which is the precursor to many other
+    analyses such as nucleotide diversities (as well as Fst, demographic
+    history analysis, etc.)
+
+```         
+~/myscripts
+vim ANGSD_doTheta.sh
+REF="/netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa"
+
+OUT=~/myresults/ANGSD
+
+MYPOP=""
+
+SUFFIX=""
+
+#Estimation of the SFS for all sites using the FOLDED SFS
+realSFS ${OUT}/${MYPOP}_${SUFFIX}.saf.idx \
+        -maxIter 1000 \
+        -tole 1e-6 \
+        -P 1 \
+        > ${OUT}/${MYPOP}_${SUFFIX}.sfs
+```
+
+4.  Estimate the theta diversity stats Once you have the SFS, you can
+    estimate the thetas and neutrality stats
+
+```         
+# Estimate thetas and stats using the SFS
+
+realSFS saf2theta ${OUT}/${MYPOP}_${SUFFIX}.saf.idx \
+        -sfs ${OUT}/${MYPOP}_${SUFFIX}.sfs \
+        -outname ${OUT}/${MYPOP}_${SUFFIX}
+
+thetaStat do_stat ${OUT}/${MYPOP}_${SUFFIX}.thetas.idx
+```
+
+If we wanted to analyze this on sliding windows: instead replace the
+above code chunk with the following
+
+```         
+# For sliding window analysis:
+
+thetaStat do_stat ${OUT}/${MYPOP}_${SUFFIX}.thetas.idx \
+-win 50000 \
+-step 10000 \
+-outnames ${OUT}/${MYPOP}_${SUFFIX}.thetasWindow.gz
+```
+
+```         
+###For either of the results files above, the first column of the results file (*.thetas.idx.pestPG) is formatted a bit funny and we don’t really need it. We can use the cut command to get rid of it:
+
+cut -f2- ${OUT}/${MYPOP}_${SUFFIX}.thetas.idx.pestPG > ${OUT}/${MYPOP}_${SUFFIX}.thetas
+```
+
+Following files should be in ANGSD.sh
+
+```         
+[mnouriai@ecogen ~]$ cd ~/myresults/ANGSD
+[mnouriai@ecogen ANGSD]$ ll
+-rw-r--r--. 1 kellrlab users 1417463962 Sep 20 11:44 9999_.saf.gz
+-rw-r--r--. 1 kellrlab users    1086161 Sep 20 11:44 9999_.saf.idx
+-rw-r--r--. 1 kellrlab users   79501025 Sep 20 11:44 9999_.saf.pos.gz
+```
+
+### Calculate SFS ("site allele frequency") and diversity stats
+
+"saf" files contain "site allele frequency" likelihoods, and are the
+info needed to estimate stats that depend on population allele
+frequencies, like: - nucleotide diversities, - neutrality stats like
+Tajima's D, and - population divergence stats like Fst. Each of these
+stats depends on the SFS -- the Site Frequency Spectrum So, our workflow
+will be to use the .saf files to estimate the SFS, and then use the SFS
+to estimate our diversity stats and Fst.
+
+-   Create ANGSD_doTheta.sh to estimate the SFS and nucleotide diversity
+    stat
+-   Based on the saf.idx files from ANGSD GL calls, first estimate the
+    Site Frequency Spectrum (SFS)
+
+```         
+~/myscripts
+vim ANGSD_doTheta.sh
+
+REF="/netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa"
+
+OUT=~/myresults/ANGSD
+
+MYPOP=""
+
+SUFFIX=""
+
+###Estimation of the SFS for all sites using the FOLDED SFS
+realSFS ${OUT}/${MYPOP}_${SUFFIX}.saf.idx \
+        -maxIter 1000 \
+        -tole 1e-6 \
+        -P 1 \
+        -fold 1 \
+        > ${OUT}/${MYPOP}_${SUFFIX}.sfs
+        
+###After the SFS, estimate the theta diversity stats
+Once you have the SFS: estimate the thetas and neutrality stats by adding the following code chunk at the end of your ANGSD_doTheta.sh script:
+
+# Estimate thetas and stats using the SFS
+
+realSFS saf2theta ${OUT}/${MYPOP}_${SUFFIX}.saf.idx \
+        -sfs ${OUT}/${MYPOP}_${SUFFIX}.sfs \
+        -outname ${OUT}/${MYPOP}_${SUFFIX}
+
+thetaStat do_stat ${OUT}/${MYPOP}_${SUFFIX}.thetas.idx
+        
+###If we wanted to analyze this on sliding windows, we could instead replace the above code chunk with the following:
+
+# For sliding window analysis:
+
+thetaStat do_stat ${OUT}/${MYPOP}_${SUFFIX}.thetas.idx \
+-win 50000 \
+-step 10000 \
+-outnames ${OUT}/${MYPOP}_${SUFFIX}.thetasWindow.gz
+```
+
+The unfolded vs. folded SFS:
+
+The big difference here is whether we are confident in the ancestral
+state of each variable site (SNP) in our dataset:
+
+-   If we know the ancestral state, then the best info is contained in
+    the unfolded SFS, which shows the frequency histogram of how many
+    derived loci are rare vs. common -- bins in the unfolded SFS go from
+    0 to 2N -- why?
+
+-   When you don't know the ancestral state confidently, you can make
+    the SFS based on the minor allele (the less frequent allele; always
+    \< 0.5 in the population). -- bins in the folded SFS go from 0 to 1N
+    -- why?
+
+Essentially, the folded spectra wraps the SFS around such that high
+frequency "derived" alleles are put in the small bins (low minor allele
+freq).
+
+*.thetas.idx.pestPG For either of the results files above, the first
+column of the results file (*.thetas.idx.pestPG) is formatted a bit
+funny and we don't really need it. There are also a bunch of other
+neutrality stats that we don't need right now. We can use the cut
+command to get rid of these extra columns. The below cut command retains
+columns 2-5, 9 and 14
+
+```         
+cut -f2-5,9,14 ${OUT}/${MYPOP}_${SUFFIX}.thetas.idx.pestPG > ${OUT}/${MYPOP}_${SUFFIX}.thetas
+```
+
+The columns correspond to the following stats:
+
+Col Statistic Description 2 Chr The chromosome or (more appropriately)
+contig being analyzed 3 WinCenter The center of the contig, in bp 4 tW
+Watterson's Theta -- an estimate of nucleotide diversity based on
+segregating sites 5 tP Theta Pi -- estimate of nucleotide diversity
+based on pairwise divergence 9 Tajima Tajima's D -- a neutrality stat
+that tests for the difference in tW-tP 14 nSites The number of base
+pairs being analyzed along this stretch of cont.
+
+### Summarize diversity stats in R
+
+-   use Filezilla to download these 2 files: .thetas.idx.pestPG .sfs
+    Save to results folder in githuib repo so we can import into R to
+    look at the mean and variability in nucleotide diversity for our pop
+
+RStudio
+
+```         
+setwd("") # set your path to your results folder in your repo where you saved your diversity stats file
+
+list.files() # list out the files in this folder to make sure you're in the right spot.
+
+# First let's read in the diversity stats
+theta <- read.table("_.thetas",sep="\t",header=T)
+
+theta$tWsite = theta$tW/theta$nSites #scales the theta-W by the number of sites
+theta$tPsite = theta$tP/theta$nSites #scales the theta-Pi by the number of sites
+
+summary(theta)
+
+# You can order the contig list to show you the contigs with the highest values of Tajima's D, or the lowest
+
+head(theta[order(theta$Tajima, decreasing = TRUE),]) # top 10 Tajima's D values
+
+head(theta[order(theta$Tajima, decreasing = FALSE),]) # bottom 10 Tajima's D values
+
+#You can also look for contigs that have combinations of high Tajima's D and low diversity -- these could represent outliers for selection
+#theta[which(theta$Tajima>1.5 & theta$tPsite<0.001),]
+
+
+sfs<-scan('9999_.sfs')
+sfs<-sfs[-c(1,which(sfs==0))]
+sfs<-sfs/sum(sfs)
+
+# Be sure to replace "9999" with your pop code in the "main" legend below
+barplot(sfs,xlab="Chromosomes",
+        names=1:length(sfs),
+        ylab="Proportions",
+        main="Pop 9999 Site Frequency Spectrum",
+        col='blue')
+
+# Put the nucleotide diversities, Tajima's D, and SFS into a 4-panel figure
+par(mfrow=c(2,2))
+hist(theta$tWsite, xlab="theta-W", main="Watterson's theta")
+hist(theta$tPsite, xlab="theta-Pi", main="Pairwise Nucleotide Diversity")
+hist(theta$Tajima, xlab="D", main="Tajima's D")
+barplot(sfs,names=1:length(sfs),main='Site Frequency Spectrum')
+
+
+# To reset the panel plotting, execute the line below:
+dev.off()
+```
+
+### Use ANGSD and the SFS for multiple pops to calculate genetic divergence between pops (Fst)
+
+-   Calculate Fst between any pair of populations by comparing their SFS
+    to each other. For this, we'll need to estimate the SFS for pairs of
+    populations; we can each contribute to the overall analysis by
+    looking at how our focal pop is divergent from the others.
+
+-   calculate Fst between our focal red spruce population (MYPOP) and
+    the black spruce samples (tell us which of our pops might be
+    hybridizing). What would we expect for Fst in this case?
+
+Write a bash script called ANGSD_Fst.sh that includes the following
+code:
+
+```         
+# Start with the usual bash script header
+# Give yourself some notes
+# Path to Black Spruce (BS) input saf.idx data:
+BLKSPR="/netfiles/ecogen/PopulationGenomics/fastq/black_spruce/cleanreads/bam/ANGSD"
+#Path to save your output:
+OUTPUT=
+
+MYPOP=""
+
+SUFFIX=""
+
+# Estimate Fst between my red spruce pop and black spruce:
+
+realSFS ${MYPOP}_.saf.idx ${BLKSPR}/BS_all.saf.idx -P 1 >${MYPOP}_BS.sfs
+realSFS fst index ${MYPOP}_.saf.idx ${BLKSPR}/BS_all.saf.idx -sfs ${MYPOP}_BS.sfs -fstout ${MYPOP}_BS -whichFst 1
+realSFS fst stats ${MYPOP}_BS.fst.idx 
+```
+
+### *pcANGSD.* Visualize popualtion structure across the landscape using PCA and Admixture
+
+-   Visualize differences in the genetic structure or genetic ancestry
+    in our sample: approach this using PCA or Admixture analysis. We can
+    do each of these approaches on genotype likelihoods in *ANGSD* using
+    a special routine called *pcANGSD.*
+
+*pcANGSD* :refines the estimation of allele frequencies for each
+individual at the same time that it finds the clusters that individual
+may have ancestry within. Since we want to run pcANGSD for the entire
+set of samples -- not just your focal pop -- we need the genotype
+likelihoods from ANGSD for all 95 red spruce samples. That would take a
+long time to run (about 24 hrs) and would be redundant for each of you
+to do, so I ran these once for the class.
+
+For your reference (and future work), the code I used to estimate the
+genotype likelihoods is here: (you don't have to run this now!)
+
+```         
+#/netfiles/ecogen/PopulationGenomics/scripts/ANGSD_allRS_poly.sh
+
+#and exported the genotype likelihoods in “beagle” format here:
+
+#/netfiles/ecogen/PopulationGenomics/ANGSD/allRS_poly.beagle.gz
+
+We can use the beagle file containing the genotype likelihoods for all 95 red spruce samples as input to pcANGSD. The script is actually not too bad…let’s give it a go:
+
+# Start with the usual bash script header
+
+# Give yourself some notes
+
+# Path to your input data (where the beagle file lives)
+
+INPUT=
+
+# Path to save your output (in your home directory):
+
+OUTPUT=
+
+SUFFIX="allRS_poly"
+
+# Make a copy of the list of bam files for all the red spruce samples and place in your home directory. You'll need this later for making figures.
+
+cp ${INPUT}/allRS_bam.list ${OUTPUT}
+
+
+# To run pcANGSD, you need to activate a "virtual environment" on the server by including the line below:
+
+source /data/popgen/pcangsd/venv/bin/activate  
+
+
+# Then, run PCA and admixture scores with pcangsd:
+
+pcangsd -b ${INPUT}/${SUFFIX}.beagle.gz \
+        -o ${OUTPUT}/${SUFFIX} \
+        -e 1 \
+        --admix \
+        --admix_alpha 50 \
+        --threads 1 
+```
+
+-   This will run pcANGSD assuming it fits a single "eigenvalue" to
+    split your samples into K=2 clusters. If you want to explore higher
+    levels of clustering in the future, you can include the -e <int>
+    flag, where is a number that is K-1 number of clusters you want to
+    fit.
+
+-   Once the run is finished, use FileZilla to transfer the following
+    files over to your repo on your laptop: allRS_bam.list
+    allRS_poly.cov allRS_poly.admix.2.Q
+
+RStudio and let's start making some figures!
+
+```         
+library(ggplot2) # plotting
+library(ggpubr) # plotting
+
+setwd("") # set the path to where you saved the pcANGSD results on your laptop
+
+## First, let's work on the genetic PCA:
+
+COV <- as.matrix(read.table("allRS_poly.cov")) # read in the genetic covariance matrix
+
+PCA <- eigen(COV) # extract the principal components from the COV matrix
+
+## How much variance is explained by the first few PCs?
+
+var <- round(PCA$values/sum(PCA$values),3)
+
+var[1:3]
+
+# A "screeplot" of the eigenvalues of the PCA:
+
+barplot(var, 
+        xlab="Eigenvalues of the PCA", 
+        ylab="Proportion of variance explained")
+
+## Bring in the bam.list file and extract the sample info:
+
+names <- read.table("allRS_bam.list")
+names <- unlist(strsplit(basename(as.character(names[,1])), split = ".sorted.rmdup.bam"))
+split = strsplit(names, "_")
+pops <- data.frame(names[1:95], do.call(rbind, split[1:95]))
+names(pops) = c("Ind", "Pop", "Row", "Col")
+
+## A quick and humble PCA plot:
+
+plot(PCA$vectors[,1:2],
+     col=as.factor(pops[,2]),
+     xlab="PC1",ylab="PC2", 
+     main="Genetic PCA")
+     
+## A more beautiful PCA plot using ggplot :)
+
+data=as.data.frame(PCA$vectors)
+data=data[,c(1:3)]
+data= cbind(data, pops)
+
+cols=c("#377eB8","#EE9B00","#0A9396","#94D2BD","#FFCB69","#005f73","#E26D5C","#AE2012", "#6d597a", "#7EA16B","#d4e09b", "gray70")
+
+ggscatter(data, x = "V1", y = "V2",
+          color = "Pop",
+          mean.point = TRUE,
+          star.plot = TRUE) +
+  theme_bw(base_size = 13, base_family = "Times") +
+  theme(panel.background = element_blank(), 
+        legend.background = element_blank(), 
+        panel.grid = element_blank(), 
+        plot.background = element_blank(), 
+        legend.text=element_text(size=rel(.7)), 
+        axis.text = element_text(size=13), 
+        legend.position = "bottom") +
+  labs(x = paste0("PC1: (",var[1]*100,"%)"), y = paste0("PC2: (",var[2]*100,"%)")) +
+  scale_color_manual(values=c(cols), name="Source population") +
+  guides(colour = guide_legend(nrow = 2))
+
+## Next, we can look at the admixture clustering:
+
+# import the ancestry scores (these are the .Q files)
+
+q <- read.table("allRS_poly.admix.2.Q", sep=" ", header=F)
+
+K=dim(q)[2] #Find the level of K modeled
+
+## order according to population code
+ord<-order(pops[,2])
+
+# make the plot:
+barplot(t(q)[,ord],
+        col=cols[1:K],
+        space=0,border=NA,
+        xlab="Populations",ylab="Admixture proportions",
+        main=paste0("Red spruce K=",K))
+text(tapply(1:nrow(pops),pops[ord,2],mean),-0.05,unique(pops[ord,2]),xpd=T)
+abline(v=cumsum(sapply(unique(pops[ord,2]),function(x){sum(pops[ord,2]==x)})),col=1,lwd=1.2)
+```
+
+### How has selection acted to drive divergence of individual loci in excess of the population structure we've observed?
+
+-   When selection acts in response to local environmental conditions:
+    we observe an excess of population structure at certain loci.
+
+-   This can be thought of as Fst at a single locus exceeding some
+    background level of divergence that exists across the genome as a
+    whole.
+
+-   We call these *"Fst outliers"* and identifying these outliers is a
+    major goal in ecological genomic studies.
+
+-   But, a major challenge is how best to control for background
+    population structure -- in other words, how can we sift out the
+    "outliers" from the rest of the population structure in the genome?
+
+-   One approach to identifying Fst outliers is using genetic PCA to:
+
+(a) identify the major axes of population structure, and then
+(b) find loci that "load" very strongly on these axes, indicating their
+    exceptional divergence is probably driven by the action of selection
+    in excess of genetic drift.
+
+-   Run a scan for Fst outliers using *pcANGSD*, just like we did for
+    the genetic PCA, but here we initiate a selection scan for loci that
+    are exceptionally divergent along one or more of the inferred
+    genetic PC axes.
+-   This method is especially helpful when it's hard to define what are
+    genetic "populations", since it uses the genetic PCA to infer the
+    genetic structure directly. The method employed in pcANGSD follows
+    the *"FastPCA"* selection scan method described by Galinsky et al.
+    2015
+-   The approach essentially uses the SNP weights or "loadings" on a
+    given genetic PC axis to determine the strength of association, and
+    if it exceeds the expectation due to neutral drift.
+
+### pcANGSD_selection.sh
+
+-   Write a bash script called pcANGSD_selection.sh that includes the
+    following code. Recall that pcANGSD uses genotype likelihoods in
+    "beagle" format, can be found here:
+    /netfiles/ecogen/PopulationGenomics/ANGSD/
+
+```         
+cd ~ /myresults/ANGSD
+vim pcANGSD_selection.sh
+INPUT=""
+
+OUTPUT=
+
+SUFFIX="allRS_poly"
+
+cp ${INPUT}/allRS_bam.list ${OUTPUT}
+
+# Activates the pcANGSD environment and run the selection scan:
+
+source /data/popgen/pcangsd/venv/bin/activate
+        
+pcangsd -b ${INPUT}/${SUFFIX}.beagle.gz \
+    -o ${OUTPUT}/${SUFFIX} \
+    -e <what number should we use here?>
+    --selection \
+    --minMaf 0.05 \
+    --sites_save \
+    --snp_weights \
+    --threads 1
+#Note: _minMaf 0.05_ option tests only those loci that have a minor allele frequency of 0.05 or greater. That’s because there’s little statistical power for testing association of alleles that are very rare (<5% in the sample).    
+```
+
+a new set of files, including: File name contents
+allRS_poly.selection.npy selection scores for each locus on each tested
+PC axis allRS_poly.weights.npy weights that show how strongly each locus
+"loads" on each PC axis allRS_poly.sites for each locus shows whether it
+got tested (1) or not (0)
+
+-   Get a file with minor allele frequencies ("maf") that ANGSD makes
+    when first estimating genotype likelihoods. You have one of these
+    files from when you worked on your focal pops, but we need one for
+    the "allRS_poly" run of all red spruce individuals for just
+    polymorphic sites.
+
+```         
+/netfiles/ecogen/PopulationGenomics/ANGSD/allRS_poly.mafs.gz
+```
+
+We need to combine the *"mafs"* file and the\_ "sites" \_file to create
+a file that has the contig and position info for each locus that got
+tested for selection.
+
+```         
+#Here’s a few lines of bash code to create this file:
+#First, we need to add a header to the “sites” file:
+
+sed -i '1i kept_sites' ~/myresults/ANGSD/allRS_poly.sites
+
+#Next, we need to get the contig and position info out of the “mafs” file and combine it with the “sites” file:
+
+zcat /netfiles/ecogen/PopulationGenomics/ANGSD/allRS_poly.mafs.gz | cut -f1-7 | paste - ~/myresults/ANGSD/allRS_poly.sites >allRS_poly_mafs.sites
+
+#Transfer the 3 listed above, plus the new allRS_poly_mafs.sites, using FileZilla and save into your repo on your laptop. 
+```
+
+### Idenitfy and visualize outlier loci in R
+
+Use R to: - import the selection scan results and associated
+meta-data, - assign p-values for each tested locus, - and visualize the
+results!
+
+```         
+###################################
+#  Selection scans for red spruce #
+###################################
+
+library(RcppCNPy) # for reading python numpy (.npy) files
+
+setwd("~/Documents/Github/Ecological_Genomics/Fall_2023/pcangsd/")
+
+list.files()
+
+###read in selection statistics (these are chi^2 distributed)
+
+s<-npyLoad("allRS_poly.selection.npy")
+
+#convert test statistic to p-value
+pval <- as.data.frame(1-pchisq(s,1))
+names(pval) = "p_PC1"
+
+##read positions
+p <- read.table("allRS_poly_mafs.sites",sep="\t",header=T, stringsAsFactors=T)
+dim(p)
+
+p_filtered = p[which(p$kept_sites==1),]
+dim(p_filtered)
+
+#How many sites got filtered out when testing for selection? Why?
+
+##make manhattan plot
+plot(-log10(pval$p_PC1),
+  col=p_filtered$chromo,
+  xlab="Position",
+  ylab="-log10(p-value)",
+  main="Selection outliers: pcANGSD e=1 (K2)")
+
+#We can zoom in if there's something interesting near a position...
+
+plot(-log10(pval$p_PC1[2e05:2.01e05]),
+  col=p_filtered$chromo, 
+  xlab="Position", 
+  ylab="-log10(p-value)", 
+  main="Selection outliers: pcANGSD e=1 (K2)")
+
+#get the contig with the lowest p-value for selection
+sel_contig <- p_filtered[which(pval==min(pval$p_PC1)),c("chromo","position")]
+sel_contig
+
+#get all the outliers with p-values below some cutoff
+cutoff=1e-3   # equals a 1 in 5,000 probability
+outlier_contigs <- p_filtered[which(pval<cutoff),c("chromo","position")]
+outlier_contigs
+
+#how many outlier loci < the cutoff?
+dim(outlier_contigs)[1]
+
+#how many unique contigs harbor outlier loci?
+length(unique(outlier_contigs$chromo))
+
+#How do we find out what functional genes are contained on the unique contigs harboring outliers?
+#use the Picea abies reference genome annotation to get the genes based on the outlier contigs, then test for enrichment of gene function using available public databases.
+
+#First, export your unique outlier contigs in R:
+
+write.table(unique(outlier_contigs$chromo),
+  "allRS_poly_PC1_outlier_contigs.txt", 
+  sep="\t",
+  quote=F,
+  row.names=F,
+  col.names=F)
+```
+
+-   Transfer back to the server
+
+-   Grep out the gene IDs. using a series of piped commands like so:
+
+-   Define your paths to the ref genome annotation on the server and
+    your newly made outlier loci file
+
+-   Use zcat to open the annotation without unzipping it, then pipe to
+    grep and use the -f flag to take the contig names from the outliers
+    file -- this is a handy trick, and saves us a lot of time from
+    having to manually input each contig one at a time and search!
+
+-   Pipe to a new grep to get just the contigs containing genes
+
+-   Pipe the list of gene IDs to take just the unique ones, cut out the
+    9th column (containing the gene IDs), and get rid of the annoying
+    "ID=" portion of each gene ID
+
+```         
+ANNOT="/netfiles/ecogen/PopulationGenomics/ref_genome/annotation/Pabies1.0-all-cds.gff3.gz"
+
+OUTLIERS=~/myresults/ANGSD/allRS_poly_PC1_outlier_contigs.txt
+
+zcat ${ANNOT} | grep -f ${OUTLIERS} | grep "gene" | uniq | cut -f9 | sed "s/ID=//g"
+```
+
+### *Plantgenie*
+
+You should now have a list of gene IDs printed to your screen. You can
+either copy these by highlighting with your mouse and clicking or you
+can save to an external file for later (using the \>outfile.txt command)
+
+-   Take your gene IDs and go to the *plantgenie website*.
+-   create a gene list using your copied IDs, determine which genes they
+    correspond to (not all wil be annotated!), and test for functional
+    enrichment:
+-   In the upper left corner, see a circle with 3 red bars --\> click
+    it, and create a new gene list
+-   Paste your gene IDs into the list, and plantgenie will search the P.
+    abies annotation and return all the known genes
+-   Click the "+" button to save these to the current gene list, then
+    close out
+-   Go to the "Analysis Tools" tab on the top bar of the page, and
+    choose "Enrichment"
+-   *Plantgenie* will now test for whether the annotation Gene Ontology
+    (GO) and Protein Family (Pfam) functional descriptions assigned to
+    each gene ID are over-represented compared to all other genes
+    containing those GO and Pfam categories in the P. abies genome.
+
+Relate back to the biology!
+
+What sort of functional genes did you find are represented in your
+outliers? Are any enriched for certain GO or Pfam functions? (focus on
+p-values \<\< 0.01, or q-values \< 0.05) Remember the population
+structure axis (genetic PC) these loci are outliers along...are any of
+the enriched functions interesting in light of this structure? Any
+surprising?
+
+### Genotype-Environment Association (GEA)
+
+-   We've now learned about outlier loci that show extreme population
+    structure along genetic PC axes.
+-   These are loci that tend to have high Fst (population structure)
+    suggestive of selection and local adaptation.
+-   How does this relate to different aspects of the environment? How do
+    we know what environmental gradients might be responsible for
+    driving this population differentiation? Where's the "landscape" in
+    all this genomics stuff?
+
+-- GEA comes in -- short for "Genotype-Environment Association". ---The
+whole idea behind GEA is to look for loci that show strong associations
+between allele frequencies and environmental gradients, like climate.
+----There's a substantial literature on GEA methods in landscape
+genomics, but a good background paper is Rellstab et al. (2015).
+
+For any GEA analysis, you essentially need two things: - Genotype data
+from individuals sampled across one or more environmental gradients. \_
+Environmental data (like cimate) you want to test as drivers of the
+selection on allele frequencies.
+
+### *Bioclim* climate data
+
+-   use R to query the *Worldclim* climate database and pull out the
+    bioclim variables for each of our samples based on their lat/longs.
+
+```         
+# You made need to use "install.packages" if you don't have some of the below libraries already
+
+library(raster)
+library(FactoMineR)
+library(factoextra)
+library(corrplot)
+
+setwd("")
+
+bio <- getData("worldclim",var="bio",res=10)
+
+coords <- read.csv("https://www.uvm.edu/~kellrlab/forClass/colebrookSampleMetaData.csv", header=T)
+
+The chunk below refers to your bamlist file that you transferred during last week's PCA/admixture analysis.  It should be the same one you want to use here -- if your sample list for analysis changes in the future, you'll need a different bamlist!
+
+names <- read.table("pcangsd/allRS_bam.list")
+names <- unlist(strsplit(basename(as.character(names[,1])), split = ".sorted.rmdup.bam"))
+split = strsplit(names, "_")
+pops <- data.frame(names[1:95], do.call(rbind, split[1:95]))
+names(pops) = c("Ind", "Pop", "Row", "Col")
+
+angsd_coords <- merge(pops, coords, by.x="Ind", by.y="Tree")
+
+points <- SpatialPoints(angsd_coords[c("Longitude","Latitude")])
+
+clim <- extract(bio,points)
+
+angsd_coords_clim <- cbind.data.frame(angsd_coords,clim)
+str(angsd_coords_clim)
+```
+
+-   don't want to test all 19 variables in our GEA, but rather just one
+    or a few that seem to capture the climate gradients in our samples.
+-   For this, we can use PCA on the climate data (so, an environmental,
+    not a genetic PCA in this case).
+-   Using the climate PCA can then let us see which variables most
+    strongly define the climate space of red spruce, and we can then use
+    these for our GEA test.
+
+```         
+clim_PCA = PCA(angsd_coords_clim[,15:33], graph=F)
+
+# screeplot of PCA eigenvalues
+fviz_eig(clim_PCA)
+
+# plot the variable loadings on the 1st 2 PCs
+fviz_pca_var(clim_PCA)
+
+# Which variables show the strongest loading on each axis?
+var <- get_pca_var(clim_PCA)
+corrplot(var$cos2, is.corr=FALSE)
+  
+# We can ask the same question using correlation tests of each variable with each PC axis:
+dimdesc(clim_PCA)
+
+# Lastly, how do our samples fall out in climate PCA space?
+fviz_pca_ind(clim_PCA, 
+             geom.ind="point",
+             col.ind = angsd_coords_clim$Latitude, 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             legend.title="Latitude")
+```
+
+```         
+#pick 1 Bioclim variabe for each PC1 and 2 axis and export the values:
+write.table(scale(angsd_coords_clim[,c("bioXX","bioYY")]),
+            "allRS_bioXX_YY.txt",
+            sep="\t",
+            quote=F,
+            row.names = F,
+            col.names=F)
+```
+
+-   Use FileZilla to transfer it to the server and into your
+    \~/myresults/ANGSD folder. \_ Use the cut command to write out
+    separate environmental files for each variable (ANGSD only tests one
+    variable at a time).
+
+Can you think of a cut statement to take your allRS_bioXX_YY.txt file as
+input and write out a new output called allRS_bioXX.txt that has just
+the first variable in it? Then try it again for the 2nd variable.
+
+```         
+cut options someinfile >someoutfile
+```
+
+### Getting our GEA run on the server started! *AGNSD* *doAsso*
+
+-   The GEA analysis will likely take some time -- maybe over a day to
+    run.
+-   We'll use ANGSD again to test for associations between allele
+    frequencies and the bioclim variables while using genotype
+    likelihoods to account for uncertainty.
+-   The ANGSD routine we'll use is called *doAsso* which stands for *"do
+    Association"*. It has it's own manual page on ANGSD's website
+-   *AGNSD* *doAsso* requires genotype probabilities (yes, these are
+    slightly different mathematical than genotype likelihoods), which
+    means we'll need to call the initial set of ANGSD commands to import
+    the bam's and filter them before sending the probabilities to the
+    doAsso function.
+
+```         
+bash header
+
+notes
+
+
+REF="/netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa"
+
+SUFFIX=""
+
+INPUT=""
+
+OUTPUT=
+
+# Make a list of all the sorted and PCR dup removed bam files:
+
+ls /netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam/2*sorted.rmdup.bam > ${OUTPUT}/allRS_bam.list
+
+# Run ANGSD to estimate the Geno Probs and then perform the GEA using doAsso:
+
+ANGSD -b ${OUTPUT}/allRS_bam.list \
+-ref ${REF} -anc ${REF} \
+-out ${OUTPUT}/${SUFFIX} \
+-nThreads 1 \
+-remove_bads 1 \
+-C 50 \
+-baq 1 \
+-minMapQ 20 \
+-minQ 20 \
+-GL 1 \
+-doSaf 1 \
+-doCounts 1 \
+-minInd 47 \
+-setMinDepthInd 1 \
+-setMaxDepthInd 40 \
+-skipTriallelic 1 \
+-doMajorMinor 1 \
+-doMaf 1 \
+-SNP_pval 1e-6 \
+-minMaf 0.05 \
+-doPost 1 \
+-doAsso 5 \
+-yQuant ${OUTPUT}/allRS_bioXX.txt
+```
+
+That's a lot of options for ANGSD! Here's the breakdown (after the
+obvious in/out and reference genome at the beginning):
+
+Code option Meaning -nthreads how many CPU's you want to use
+-remove_bads discards reads that don't map as a pair to a unique
+location in the ref genome\
+-C 50 downgrades the quality of reads with excessive mismatches to the
+ref genome -baq 1 performs re-calibration of base Q-scores around
+regions of structural variation\
+-minMapQ 20 discards reads with mapping Q-score \<20 -minQ 20 sets bases
+with Q-scores \< 20 to missing -GL 1 estimate genotype likelihoods using
+the Samtools algorithm -doSAF 1 estimate site-allele frequencies
+-doCounts 1 count mapped bases at each site -- needed for filters below
+-minInd 47 skip loci that have \< minInd number of individuals with
+data; set to \~50% of your full sample size -setMinDepthInd 1 set
+individuals with \<1 read per site to missing for that site
+-setMaxDepthInd 40 set individuals with \> 40 reads per site to missing
+for that site -skipTriallelic 1 if there are \>2 alleles present at a
+site -- discard! -doMajorMinor 1 calculate which allele is the most
+common (major) and which is rare (minor) -doMaf 1 compute the minor
+allele frequencies -SNP_pval 1e-6 discard sites unlikely to be
+polymorphic, based on a p-value of \<1e-6 -minMaf 0.05 discard sites
+with minor allele frequencies \< 5%
+
+-   Most of these are identical to what I used for calling the genotype
+    likelihoods (beagle files) that we used as input into pcANGSD.
+-   see also the ANGSD manual online so you could have them in case you
+    need to change anything.
+
+Those last 3 lines are the important part for the GEA:
+
+Code option Meaning doPost 1 compute genotype probabilities doAsso 5
+perform the GEA association test -yQuant path and filename containing
+the input environmental variable to test
+
+-   You'll also notice that we do this just on loci that are present in
+    at least 5% frequeny across the entire set of samples (-minMaf 0.05)
+
+```         
+#Save your script as ANGSD_GEA.sh
+tmux
+bash
+dettach from screen 
+top #to see if you’re running!
+```
+The results will be stored in a file called: allRS_poly_bioXX.lrt0.gz where “bioXX is the climate variable you supplied to ${BIOVAR} in the script.
+
+```
+#peek inside this file:
+zcat allRS_poly_bio10.lrt0.gz | head
+```
+Inside the file:
+Column	            Meaning
+LRTscore	        Likelihood Ratio Test (LRT) of whether the SNP is associated with climate
+high_WT/HE/HO	    The counts of homozygous (wildtype):heterozygous:homozygous genotypes
+LRTem	            Another version of the likelihood ratio test (this is the one used to compute significance)
+beta	            The slope of minor allele frequencies along the climate gradient
+SE                	The standard error of the slope
+emIter            	Number of iterations of the EM algorithm used to test for significance in the GEA
+
+- Most of the head on this file has lots of ‘nan’. That means those SNPs were not significant (i.e., had no significant association between allele frequencies and the climate gradient).
+
+```
+#Quickly find the loci that ARE signficant by doing an “inverted” grep search that finds all the lines in the file that DON’T have a match to your search term. 
+
+zcat allRS_poly_bio10.lrt0.gz | grep -v "nan" | head
+```
+### Transcriptome
+
+### fastp
+```
+#Use a bash script to loop through the replicates from your treatment group $MYSAMP
+#There’s an example script for you to edit in
+
+/data/project_data/RNAseq/scripts/fastp_ahud.sh.
+
+#Copy this to your ~/myscripts directory.
+
+#Edit the script: All you need to do is define your samples with 
+$MYSAMP
+
+#Make sure you make 
+a ~/myresults/fastp
+directory first.
+
+#This should only take about ~12 minutes for each of your sets of samples to complete, but let’s start it in tmux to be safe.
+
+#!/bin/bash   
+
+# This script loops through a set of files defined by MYSAMP, matching left and right reads
+# and cleans the raw data using fastp according to parameters set below
+
+# cd to the location (path) to the fastq data:
+
+cd /data/project_data/RNAseq/rawdata
+
+# Define the sample code to anlayze
+# Be sure to replace with your 5-6-digit sample code
+
+MYSAMP="XXXXX"
+
+# for each file that has "MYSAMP" and "_1.fq.gz" (read 1) in the name
+# the wildcard here * allows for the different reps to be captured in the list
+# start a loop with this file as the input:
+
+for READ1 in ${MYSAMP}*_1.fq.gz
+do
+
+# the partner to this file (read 2) can be found by replacing the _1.fq.gz with _2.fq.gz
+# second part of the input for PE reads
+
+READ2=${READ1/_1.fq.gz/_2.fq.gz}
+
+# make the output file names: print the fastq name, replace _# with _#_clean
+
+NAME1=$(echo $READ1 | sed "s/_1/_1_clean/g")
+NAME2=$(echo $READ2 | sed "s/_2/_2_clean/g")
+
+# print the input and output to screen 
+
+echo $READ1 $READ2
+echo $NAME1 $NAME2
+
+# call fastp
+/data/popgen/fastp -i ${READ1} -I ${READ2} -o /data/project_data/RNAseq/cleandata/${NAME1} -O /data/project_data/RNAseq/cleandata/${NAME2} \
+--detect_adapter_for_pe \
+--trim_front1 24 \
+--trim_poly_g \
+--thread 1 \
+--cut_right \
+--cut_window_size 6 \
+--qualified_quality_phred 20 \
+--length_required 35 \
+--html ~/myresults/fastqc/${NAME1}.html \
+--json ~/myresults/fastqc/${NAME1}.json
+
+done
+
+#Now move the .html files to your local machine using FileZilla.
+```
+
+### Assess the quality of the reference transcriptome
+
+```
+#I previously assembled the de novo transcriptome with these data using Trinity. Let’s look at some basic statistics of the assembly.
+
+/data/popgen/trinityrnaseq-v2.13.2/util/TrinityStats.pl  /data/project_data/RNAseq/assembly/ahud_Trinity.fasta
+#Should yield:
+
+################################
+## Counts of transcripts, etc.
+################################
+Total trinity 'genes':  130580
+Total trinity transcripts:  349516
+Percent GC: 35.57
+
+########################################
+Stats based on ALL transcript contigs:
+########################################
+
+    Contig N10: 4647
+    Contig N20: 3149
+    Contig N30: 2356
+    Contig N40: 1791
+    Contig N50: 1356
+
+    Median contig length: 430
+    Average contig: 801.91
+    Total assembled bases: 280279107
+
+
+#####################################################
+## Stats based on ONLY LONGEST ISOFORM per 'GENE':
+#####################################################
+
+    Contig N10: 4679
+    Contig N20: 3115
+    Contig N30: 2247
+    Contig N40: 1613
+    Contig N50: 1057
+
+    Median contig length: 320
+    Average contig: 626.33
+    Total assembled bases: 81786351
+#We can also assess the completeness of the assembly using a program called BUSCO
+
+busco -m transcriptome -i /data/project_data/RNAseq/assembly/ahud_Trinity.fasta -o ~/myresults/BUSCO/BUSCOarthropoda -l arthropoda_odb10
+
+$ cat short_summary.specific.arthropoda_odb10.BUSCOarthropoda.txt 
+# BUSCO version is: 5.2.2 
+# The lineage dataset is: arthropoda_odb10 (Creation date: 2020-09-10, number of genomes: 90, number of BUSCOs: 1013)
+# Summarized benchmarking in BUSCO notation for file /data/project_data/RNAseq/assembly/ahud_Trinity.fasta
+# BUSCO was run in mode: transcriptome
+
+    ***** Results: *****
+
+    C:96.9%[S:7.1%,D:89.8%],F:1.1%,M:2.0%,n:1013       
+    982 Complete BUSCOs (C)            
+    72  Complete and single-copy BUSCOs (S)    
+    910 Complete and duplicated BUSCOs (D)     
+    11  Fragmented BUSCOs (F)              
+    20  Missing BUSCOs (M)             
+    1013    Total BUSCO groups searched        
+
+Dependencies and versions:
+    hmmsearch: 3.1
+    metaeuk: 5.34c21f2
+```
+
+### Map to the reference transcriptome
+
+``` 
+/data/popgen/trinityrnaseq-v2.13.2/util/align_and_estimate_abundance.pl --transcripts /data/project_data/RNAseq/assembly/ahud_Trinity.fasta \
+  --est_method salmon \
+  --trinity_mode \
+  --prep_reference
+  
+#This should make two files:
+
+ahud_Trinity.fasta.gene_trans_map
+ahud_Trinity.fasta.salmon.idx
+
+
+#The chunk below maps to the reference using salmon
+#For this part you need to make the samples file ahud_XXXXX.txt with your set of samples.
+#Copy the complete file from /data/project_data/RNAseq/assembly/ahud_XXXXX.txt to your local machine (or you could edit in vim but there will be a lot of deleting.
+#Use a text editor to edit the file to only include your samples.
+Copy the file back to the server; Make sure you give the correct path to your samples file.
+#NOTE: Run this with tmux and first navigate to the 
+
+/data/project_data/RNAseq/mapping directory
+cd /data/project_data/RNAseq/mapping
+
+/data/popgen/trinityrnaseq-v2.13.2/util/align_and_estimate_abundance.pl --transcripts /data/project_data/RNAseq/assembly/ahud_Trinity.fasta \
+  --seqType fq \
+  --samples_file /data/project_data/RNAseq/assembly/ahud_XXXXX.txt \
+  --est_method salmon \
+  --output_dir /data/project_data/RNAseq/mapping \
+  --thread_count 1 \
+  --trinity_mode
+#Let’s check the mapping rate of the clean reads to the trinity assembly.
+
+grep -r --include \*.log -e 'Mapping rate'
+
+#This chunk below assembles all the individually mapped reads into one data matrix
+#We provide a file list to point to just the quant.sf files called salmon_results_filelist.txt.
+```
+
+### Prepare data for import into DESeq2
+
+```
+cd /data/project_data/RNAseq/mapping
+/data/popgen/trinityrnaseq-v2.13.2/util/abundance_estimates_to_matrix.pl --est_method salmon \
+  --gene_trans_map /data/project_data/RNAseq/assembly/ahud_Trinity.fasta.gene_trans_map \
+  --quant_files /data/project_data/RNAseq/mapping/salmon_results_filelist.txt \
+  --name_sample_by_basedir
+  
+#Move the counts data matrix to your individual machines using FileZilla. Also move the ahud_samples_R.txt file from /data/project_data/RNAseq/mapping/ to your machine. This file is a table that associates each of our samples with their conditions (treatment, generation, replicate).
+```
+### Analyze the gene expression data (a.k.a. counts data) using DESeq2
+
+``` 
+#Now we will work in R on our individual machines, each of us working with the complete data set (n=38, not just a subset of samples). There are detailed tutorials available from the creators of DESeq2.
+
+#Get set up; Load the packages/libraries we will likely need
+## Set your working directory
+setwd("~/github/hudsonica")
+
+## Import the libraries that we're likely to need in this session
+
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
+
+library(DESeq2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(ggpubr)
+library(wesanderson)
+library(vsn)  ### First: BiocManager::install("vsn") AND BiocManager::install("hexbin")
+
+Tools -> Install packages -> Search for the library of interest; Install including dependencies.
+
+```
+
+### Import Counts Matrix and Sample ID tables into R and DESeq2
+
+```
+# Import the counts matrix
+countsTable <- read.table("data/salmon.isoform.counts.matrix", header=TRUE, row.names=1)
+head(countsTable)
+dim(countsTable)
+
+countsTableRound <- round(countsTable) # bc DESeq2 doesn't like decimals (and Salmon outputs data with decimals)
+head(countsTableRound)
+
+#import the sample discription table
+conds <- read.delim("ahud_samples_R.txt", header=TRUE, stringsAsFactors = TRUE, row.names=1)
+head(conds)
+```
+
+### Explore the counts data a bit
+
+```
+# Let's see how many reads we have from each sample
+colSums(countsTableRound)
+mean(colSums(countsTableRound))
+
+barplot(colSums(countsTableRound), names.arg=colnames(countsTableRound),cex.names=0.5, las=3,ylim=c(0,20000000))
+abline(h=mean(colSums(countsTableRound)), col="blue", lwd=2)
+
+# the average number of counts per gene
+rowSums(countsTableRound)
+mean(rowSums(countsTableRound)) # [1] 11930.81 - tonsa, 6076.078 - hudsonica genes, 2269 - hudsonica isoform
+median(rowSums(countsTableRound)) # [1] 2226 - tonsa, 582 - hudsonica, 109
+
+apply(countsTableRound,2,mean) # 2 in the apply function does the action across columns
+apply(countsTableRound,1,mean) # 1 in the apply function does the action across rows
+hist(apply(countsTableRound,1,mean),xlim=c(0,1000), ylim=c(0,120000),breaks=10000)
+```
+
+### Create a DESeq object and define the experimental design
+
+```
+#### Create a DESeq object and define the experimental design here with the tilda
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData=conds, 
+                              design= ~ treatment + generation)
+
+dim(dds)
+
+# Filter out genes with too few reads - remove all genes with counts < 15 in more than 75% of samples, so ~28)
+## suggested by WGCNA on RNAseq FAQ
+
+dds <- dds[rowSums(counts(dds) >= 30) >= 28,]
+nrow(dds) 
+
+# Run the DESeq model to test for differential gene expression
+dds <- DESeq(dds)
+
+# List the results you've generated
+resultsNames(dds)
+```
+
+### Visualize the global gene expression patterns using PCA
+
+```
+###############################################################
+# PCA to visualize global gene expression patterns
+
+# First normalize the data using variance stabilization
+vsd <- vst(dds, blind=FALSE)
+
+data <- plotPCA(vsd, intgroup=c("treatment","generation"), returnData=TRUE)
+percentVar <- round(100 * attr(data,"percentVar"))
+
+###########  
+
+dataF0 <- subset(data, generation == 'F0')
+
+F0 <- ggplot(dataF0, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  ##theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #guides(shape = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  #guides(fill = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  #guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+
+F0
+
+
+png("PCA_F0.png", res=300, height=5, width=5, units="in")
+
+ggarrange(F0, nrow = 1, ncol=1)
+
+dev.off()
+
+################# F2
+
+dataF2 <- subset(data, generation == 'F2')
+
+F2 <- ggplot(dataF2, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,22,23), labels = c("Ambient", "Acidification","Warming"))+
+  # scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) + 
+  #scale_color_manual(values=c('black')) +
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A"), labels = c("Ambient", "Acidification","Warming"))+
+  #theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #scale_size(guide="none") +
+  guides(shape = guide_legend(override.aes = list(shape = c( 21,22, 23))))+
+  guides(fill = guide_legend(override.aes = list(shape = c( 21,22, 23))))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+F2
+
+
+png("PCA_F2.png", res=300, height=5, width=5, units="in")
+
+ggarrange(F2, nrow = 1, ncol=1)
+
+dev.off()
+
+# Yes - F2 is missing one ambient replicate
+
+################################ F4
+
+dataF4 <- subset(data, generation == 'F4')
+
+F4 <- ggplot(dataF4, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  # scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) + 
+  #scale_color_manual(values=c('black')) +
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  #theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #scale_size(guide="none") +
+  guides(shape = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  guides(fill = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+F4
+
+
+png("PCA_F4.png", res=300, height=5, width=5, units="in")
+
+ggarrange(F4, nrow = 1, ncol=1)
+
+dev.off()
+
+
+################# F11
+
+dataF11 <- subset(data, generation == 'F11')
+
+F11 <- ggplot(dataF11, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,24), labels = c("Ambient", "OWA"))+
+  # scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) + 
+  #scale_color_manual(values=c('black')) +
+  scale_fill_manual(values=c('#6699CC', "#CC3333"), labels = c("Ambient", "OWA"))+
+  #theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #scale_size(guide="none") +
+  guides(shape = guide_legend(override.aes = list(shape = c( 21, 24))))+
+  guides(fill = guide_legend(override.aes = list(shape = c( 21, 24))))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+F11
+
+
+png("PCA_F11.png", res=300, height=5, width=5, units="in")
+
+ggarrange(F11, nrow = 1, ncol=1)
+
+dev.off()
+```
+### Check our mapping rates
+```
+grep -r --include \*.log -e 'Mapping rate'
+```
+
+### Prepare data for import into DESeq2
+
+The code below assembles all the individually mapped reads into one data matrix
+We provide a file list to point to just the quant.sf files called salmon_results_filelist.txt.
+
+NOTE: Only one person needs to run the code below. Who’s the lucky person this time?
+```
+cd /data/project_data/RNAseq/mapping
+
+/data/popgen/trinityrnaseq-v2.13.2/util/abundance_estimates_to_matrix.pl --est_method salmon \
+  --gene_trans_map /data/project_data/RNAseq/assembly/ahud_Trinity.fasta.gene_trans_map \
+  --quant_files /data/project_data/RNAseq/mapping/salmon_results_filelist.txt \
+  --name_sample_by_basedir
+```
+
+Alright! With this matrix of number of reads that mapped to each contig/transcript, we can move to analyzing the data to test for differences in gene expression and more!
+
+Move the counts data matrix to your individual machines using FileZilla. Also move the ahud_samples_R.txt file from /data/project_data/RNAseq/mapping/ to your machine. This file is a table that associates each of our samples with their conditions (treatment, generation, replicate).
+
+### 2. Analyze the gene expression data (a.k.a. counts data) using DESeq2
+
+```
+#Get set up; Load the packages/libraries we will likely need
+#Set your working directory
+setwd("~/github/hudsonica")
+
+#Import the libraries that we're likely to need in this session
+
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
+
+library(DESeq2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(ggpubr)
+library(wesanderson)
+library(vsn)  ### First: BiocManager::install("vsn") AND BiocManager::install("hexbin")
+```
+
+### Import Counts Matrix and Sample ID tables into R and DESeq2
+
+```
+#Import the counts matrix
+countsTable <- read.table("data/salmon.isoform.counts.matrix", header=TRUE, row.names=1)
+head(countsTable)
+dim(countsTable)
+
+countsTableRound <- round(countsTable) # bc DESeq2 doesn't like decimals (and Salmon outputs data with decimals)
+head(countsTableRound)
+
+#import the sample discription table
+conds <- read.delim("ahud_samples_R.txt", header=TRUE, stringsAsFactors = TRUE, row.names=1)
+head(conds)
+
+#Explore the counts data a bit
+# Let's see how many reads we have from each sample
+colSums(countsTableRound)
+mean(colSums(countsTableRound))
+
+barplot(colSums(countsTableRound), names.arg=colnames(countsTableRound),cex.names=0.5, las=3,ylim=c(0,20000000))
+abline(h=mean(colSums(countsTableRound)), col="blue", lwd=2)
+
+# the average number of counts per gene
+rowSums(countsTableRound)
+mean(rowSums(countsTableRound)) # [1] 11930.81 - tonsa, 6076.078 - hudsonica genes, 2269 - hudsonica isoform
+median(rowSums(countsTableRound)) # [1] 2226 - tonsa, 582 - hudsonica, 109
+
+apply(countsTableRound,2,mean) # 2 in the apply function does the action across columns
+apply(countsTableRound,1,mean) # 1 in the apply function does the action across rows
+hist(apply(countsTableRound,1,mean),xlim=c(0,1000), ylim=c(0,120000),breaks=10000)
+```
+
+
+### Create a DESeq object and define the experimental design
+```
+#Create a DESeq object and define the experimental design here with the tilda
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData=conds, 
+                              design= ~ generation + treatment)
+
+dim(dds)
+
+# Filter out genes with too few reads - remove all genes with counts < 15 in more than 75% of samples, so ~28)
+## suggested by WGCNA on RNAseq FAQ
+
+dds <- dds[rowSums(counts(dds) >= 30) >= 28,]
+nrow(dds) 
+
+# Run the DESeq model to test for differential gene expression
+dds <- DESeq(dds)
+
+# List the results you've generated
+resultsNames(dds)
+``` 
+
+### Check the quality of the data by sample clustering and visualization
+```
+###############################################################
+
+#Check the quality of the data by sample clustering and visualization
+
+library("pheatmap")
+library("vsn")
+
+# this gives log2(n + 1)
+ntd <- normTransform(dds)
+meanSdPlot(assay(ntd))
+
+vsd <- vst(dds, blind=FALSE)
+meanSdPlot(assay(vsd))
+           
+
+sampleDists <- dist(t(assay(vsd)))
+
+library("RColorBrewer")
+sampleDistMatrix <- as.matrix(sampleDists)
+rownames(sampleDistMatrix) <- paste(vsd$treatment, vsd$generation, sep="-")
+colnames(sampleDistMatrix) <- NULL
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows=sampleDists,
+         clustering_distance_cols=sampleDists,
+         col=colors)
+```
+
+### Visualize the global gene expression patterns using PCA
+```
+###############################################################
+
+# PCA to visualize global gene expression patterns
+
+# first transform the data for plotting using variance stabilization
+vsd <- vst(dds, blind=FALSE)
+
+pcaData <- plotPCA(vsd, intgroup=c("treatment","generation"), returnData=TRUE)
+percentVar <- round(100 * attr(data,"percentVar"))
+
+ggplot(pcaData, aes(PC1, PC2, color=treatment, shape=generation)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()
+```
+
+### Let’s plot the PCA by generation in four panels
+```
+###############################################################
+
+#Let's plot the PCA by generation in four panels
+
+data <- plotPCA(vsd, intgroup=c("treatment","generation"), returnData=TRUE)
+percentVar <- round(100 * attr(data,"percentVar"))
+
+###########  
+
+dataF0 <- subset(data, generation == 'F0')
+
+F0 <- ggplot(dataF0, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  ##theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #guides(shape = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  #guides(fill = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  #guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+
+F0
+
+
+#png("PCA_F0.png", res=300, height=5, width=5, units="in")
+
+#ggarrange(F0, nrow = 1, ncol=1)
+
+#dev.off()
+
+################# F2
+
+dataF2 <- subset(data, generation == 'F2')
+
+F2 <- ggplot(dataF2, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,22,23), labels = c("Ambient", "Acidification","Warming"))+
+  # scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) + 
+  #scale_color_manual(values=c('black')) +
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A"), labels = c("Ambient", "Acidification","Warming"))+
+  theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #scale_size(guide="none") +
+  guides(shape = guide_legend(override.aes = list(shape = c( 21,22, 23))))+
+  guides(fill = guide_legend(override.aes = list(shape = c( 21,22, 23))))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+F2
+
+
+# png("PCA_F2.png", res=300, height=5, width=5, units="in")
+# 
+# ggarrange(F2, nrow = 1, ncol=1)
+# 
+# dev.off()
+
+# Yes - F2 is missing one ambient replicate
+
+################################ F4
+
+dataF4 <- subset(data, generation == 'F4')
+
+F4 <- ggplot(dataF4, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  # scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) + 
+  #scale_color_manual(values=c('black')) +
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  #theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #scale_size(guide="none") +
+  guides(shape = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  guides(fill = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+F4
+
+
+# png("PCA_F4.png", res=300, height=5, width=5, units="in")
+# 
+# ggarrange(F4, nrow = 1, ncol=1)
+# 
+# dev.off()
+
+
+################# F11
+
+dataF11 <- subset(data, generation == 'F11')
+
+F11 <- ggplot(dataF11, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,24), labels = c("Ambient", "OWA"))+
+  scale_fill_manual(values=c('#6699CC', "#CC3333"), labels = c("Ambient", "OWA"))+
+  guides(shape = guide_legend(override.aes = list(shape = c( 21, 24))))+
+  guides(fill = guide_legend(override.aes = list(shape = c( 21, 24))))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+F11
+
+
+# png("PCA_F11.png", res=300, height=5, width=5, units="in")
+# 
+# ggarrange(F11, nrow = 1, ncol=1)
+# 
+# dev.off()
+
+ggarrange(F0, F2, F4, F11, nrow = 2, ncol=2)
+```
+
+
+### Now that we have a sense of our data, let’s explore models and contrasts for testing for differential expression
+
+```
+#Check on the DE results from the DESeq command way above ##
+
+resAM_OWA <- results(dds, name="treatment_OWA_vs_AM", alpha=0.05)
+
+resAM_OWA <- resAM_OWA[order(resAM_OWA$padj),]
+head(resAM_OWA)  
+
+summary(resAM_OWA)
+
+
+resAM_OW <- results(dds, name="treatment_OW_vs_AM", alpha=0.05)
+
+resAM_OW <- resAM_OW[order(resAM_OW$padj),]
+head(resAM_OW)  
+
+summary(resAM_OW)
+
+
+### Plot Individual genes ### 
+
+# Counts of specific top interaction gene! (important validatition that the normalization, model is working)
+d <-plotCounts(dds, gene="TRINITY_DN2919_c0_g1_i12", intgroup = (c("treatment","generation")), returnData=TRUE)
+d
+
+p <-ggplot(d, aes(x=treatment, y=count, color=treatment, shape=generation)) + 
+  theme_minimal() + theme(text = element_text(size=20), panel.grid.major=element_line(colour="grey"))
+p <- p + geom_point(position=position_jitter(w=0.2,h=0), size=3)
+p <- p + stat_summary(fun = mean, geom = "point", size=5, alpha=0.7) 
+p
+```
+
+### Let’s try another model for testing DGE
+```
+#################### MODEL NUMBER 2 - subset to focus on effect of treatment for each generation
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData=conds, 
+                              design= ~ treatment)
+
+dim(dds)
+# [1] 130580     38
+
+# Filter 
+dds <- dds[rowSums(counts(dds) >= 30) >= 28,]
+nrow(dds) 
+
+# Subset the DESeqDataSet to the specific level of the "generation" factor
+dds_sub <- subset(dds, select = generation == 'F0')
+dim(dds_sub)
+
+# Perform DESeq2 analysis on the subset
+dds_sub <- DESeq(dds_sub)
+
+resultsNames(dds_sub)
+
+res_F0_AMvOW <- results(dds_sub, name="treatment_OW_vs_AM", alpha=0.05)
+
+res_F0_AMvOW <- res_F0_AMvOW[order(res_F0_AMvOW$padj),]
+head(res_F0_AMvOW) 
+
+summary(res_F0_AMvOW)
+
+
+### Plot Individual genes ### 
+
+# Counts of specific top interaction gene! (important validatition that the normalization, model is working)
+d <-plotCounts(dds, gene="TRINITY_DN3821_c0_g1_i2", intgroup = (c("treatment","generation")), returnData=TRUE)
+d
+
+p <-ggplot(d, aes(x=treatment, y=count, color=treatment, shape=generation)) + 
+  theme_minimal() + theme(text = element_text(size=20), panel.grid.major=element_line(colour="grey"))
+p <- p + geom_point(position=position_jitter(w=0.2,h=0), size=3)
+p <- p + stat_summary(fun = mean, geom = "point", size=5, alpha=0.7) 
+p
+```
+### We can make an MA (or sideways volcano) plot now that we’re contrasting just two groups
+```
+plotMA(res_F0_AMvOW, ylim=c(-4,4))
+```
+#We can also make a heatmap of the DEGs
+########################################
+```
+#Heatmap of top 20 genes sorted by pvalue
+
+library(pheatmap)
+
+vsd <- vst(dds_sub, blind=FALSE)
+
+topgenes <- head(rownames(res_F0_AMvOW),20)
+mat <- assay(vsd)[topgenes,]
+mat <- mat - rowMeans(mat)
+df <- as.data.frame(colData(dds_sub)[,c("generation","treatment")])
+pheatmap(mat, annotation_col=df)
+```
+
+### Review de novo transcriptome assembly filtering results
+Our initial assembly has ~350,000 isoforms and ~180,000 genes due to the large amount of genetic diversity among the 100s of individuals sequenced and potential isoforms/splice variants among the different treatment conditions. I clustered the initial assembly based on 95% sequence similarity using CD-HIT-EST (v4.6.6-2016-0711) and ran Transdecoder to filter down to only open reading frames. The code I used is below for your reference.
+
+```
+/data/popgen/cd-hit-v4.6.6-2016-0711/cd-hit-est -i /data/project_data/RNAseq/archive/assembly/ahud_Trinity.fasta -o ahud_Trinity_95.fa -c 0.95 -n 10 -d 0 -M 16000 -T 8
+
+#Where, - c % sequence similarity - n word size, -n 10, 11 for thresholds 0.95 ~ 1.0
+
+/data/popgen/trinityrnaseq-v2.13.2/util/TrinityStats.pl  /data/project_data/RNAseq/archive/assembly/ahud_Trinity_95.fa
+
+
+################################
+## Counts of transcripts, etc.
+################################
+Total trinity 'genes':  118421
+Total trinity transcripts:  195476
+Percent GC: 34.10
+
+########################################
+Stats based on ALL transcript contigs:
+########################################
+
+    Contig N10: 4403
+    Contig N20: 2913
+    Contig N30: 2114
+    Contig N40: 1537
+    Contig N50: 1069
+
+    Median contig length: 371
+    Average contig: 679.44
+    Total assembled bases: 132813467
+
+
+#####################################################
+## Stats based on ONLY LONGEST ISOFORM per 'GENE':
+#####################################################
+
+    Contig N10: 4778
+    Contig N20: 3209
+    Contig N30: 2338
+    Contig N40: 1708
+    Contig N50: 1166
+
+    Median contig length: 333
+    Average contig: 661.14
+    Total assembled bases: 78292692
+```
+
+The contig length in this filtered assembly is a little bit longer than before. Now run Transdecoder to get Open Reading Frames:
+```
+/data/popgen/TransDecoder-3.0.1/TransDecoder.LongOrfs -t /data/project_data/RNAseq/archive/assembly/ahud_Trinity_95.fa
+Completed! Now check the assembly stats:
+
+/data/popgen/trinityrnaseq-v2.13.2/util/TrinityStats.pl  /data/project_data/RNAseq/archive/assembly/ahud_Trinity_95.fa.transdecoder_dir/longest_orfs.cds
+
+
+################################
+## Counts of transcripts, etc.
+################################
+Total trinity 'genes':  27960
+Total trinity transcripts:  67916
+Percent GC: 41.50
+
+########################################
+Stats based on ALL transcript contigs:
+########################################
+
+    Contig N10: 4446
+    Contig N20: 3027
+    Contig N30: 2247
+    Contig N40: 1749
+    Contig N50: 1386
+
+    Median contig length: 531
+    Average contig: 925.37
+    Total assembled bases: 62847294
+
+
+#####################################################
+## Stats based on ONLY LONGEST ISOFORM per 'GENE':
+#####################################################
+
+    Contig N10: 5154
+    Contig N20: 3576
+    Contig N30: 2751
+    Contig N40: 2175
+    Contig N50: 1761
+
+    Median contig length: 792
+    Average contig: 1210.45
+    Total assembled bases: 33844206
+```
+
+Given BUSCO issues on our server, I found a way to submit the BUSCO job online: https://gvolante.riken.jp/ Submitted at 10pm 10/20, finished at 8am 10/21
+
+```
+SHORT SUMMARY OF THE PROJECT:
+Job ID  202310211036-Q2PWKD8FRLY1CHJY
+Project name    Ahud_95_ORF
+Selected program    BUSCO_v5
+Selected ortholog set   Arthropoda
+
+COMPLETENESS ASSESSMENT RESULTS:
+Total number of core genes queried  1013
+Number of core genes detected
+  Complete  980 (96.74%)
+  Complete + Partial    992 (97.93%)
+Number of missing core genes    21 (2.07%)
+Average number of orthologs per core gene   1.59
+% of detected core genes that have more than 1 ortholog 36.12
+Scores in BUSCO format  C:96.7%[S:61.8%,D:34.9%],F:1.2%,M:2.1%
+```
+
+The percent single copy and duplicated dramatically improved,from S:7.1%,D:89.8% to S:61.8%,D:34.9%! Much better! So I remapped our cleaned reads to this new assembly using the salmon.
+```
+Complete assembly	Filtered assembly
+Number of transcripts	349,516	67,916
+N50	1,057	1,761
+Mean length	626.33	1210.45
+BUSCO % complete	96.9%	96.74%
+BUSCO Single	7.1%,	61.8%
+BUSCO Duplicated	89.8%	34.9%
+% mapping	98%	66%
+transcripts after depth filtering	42,575	20,598
+```
+
+Use Filezilla to copy over the new counts matrix salmon.isoform.counts.matrix.filteredAssembly from /data/project_data/RNAseq/mapping.
+
+### Analyze the gene expression data (a.k.a. counts data) using DESeq2
+Now we will work in R on our individual machines, each of us working with the complete data set (n=38, not just a subset of samples). There are detailed tutorials available from the creators of DESeq2.
+
+Get set up; Load the packages/libraries we will likely need
+```
+## Set your working directory
+setwd("YOUR/WORKING/DIRECTORY")
+
+## Import the libraries that we're likely to need in this session
+
+library(DESeq2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(ggpubr)
+library(wesanderson)
+library(vsn)  
+```
+
+### Import Counts Matrix and Sample ID tables into R and DESeq2
+Make sure to replace the counts matrix you are importing!
+```
+# Import the counts matrix
+countsTable <- read.table("salmon.isoform.counts.matrix.filteredAssembly", header=TRUE, row.names=1)
+head(countsTable)
+dim(countsTable)
+
+countsTableRound <- round(countsTable) # bc DESeq2 doesn't like decimals (and Salmon outputs data with decimals)
+head(countsTableRound)
+
+#import the sample discription table
+conds <- read.delim("ahud_samples_R.txt", header=TRUE, stringsAsFactors = TRUE, row.names=1)
+head(conds)
+```
+
+### Explore the counts data with simple calculations and plots
+```
+# Let's see how many reads we have from each sample
+colSums(countsTableRound)
+mean(colSums(countsTableRound))
+
+barplot(colSums(countsTableRound), names.arg=colnames(countsTableRound),cex.names=0.5, las=3,ylim=c(0,20000000))
+abline(h=mean(colSums(countsTableRound)), col="blue", lwd=2)
+
+# the average number of counts per gene
+rowSums(countsTableRound)
+mean(rowSums(countsTableRound)) # [1] 6076.078 - hudsonica genes, 2269 - hudsonica isoform, 8218 - hudsonica filtered
+median(rowSums(countsTableRound)) # [1] 582 - hudsonica, 109 - hudsonica isoforms, 377 - hudsonica filtered
+
+apply(countsTableRound,2,mean) # 2 in the apply function does the action across columns
+apply(countsTableRound,1,mean) # 1 in the apply function does the action across rows
+hist(apply(countsTableRound,1,mean),xlim=c(0,1000), ylim=c(0,50000),breaks=10000)
+```
+
+### Create a DESeq object, define the experimental design, and filter by depth
+
+```
+#### Create a DESeq object and define the experimental design here with the tilda
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData=conds, 
+                              design= ~ generation + treatment)
+
+dim(dds)
+
+# Filter out genes with too few reads - remove all genes with counts < 15 in more than 75% of samples, so ~28)
+## suggested by WGCNA on RNAseq FAQ
+
+dds <- dds[rowSums(counts(dds) >= 30) >= 28,]
+nrow(dds) 
+
+# Run the DESeq model to test for differential gene expression
+dds <- DESeq(dds)
+
+# List the results you've generated
+resultsNames(dds)
+```
+
+### Check the quality of the data by sample clustering and visualization
+```
+###############################################################
+
+# Check the quality of the data by sample clustering and visualization
+# The goal of transformation "is to remove the dependence of the variance on the mean, particularly the high variance of the logarithm of count data when the mean is low."
+
+library("pheatmap")
+library("vsn")
+
+# this gives log2(n + 1)
+ntd <- normTransform(dds)
+meanSdPlot(assay(ntd))
+
+# Variance stabilizing transformation
+vsd <- vst(dds, blind=FALSE)
+meanSdPlot(assay(vsd))
+           
+
+sampleDists <- dist(t(assay(vsd)))
+
+library("RColorBrewer")
+sampleDistMatrix <- as.matrix(sampleDists)
+rownames(sampleDistMatrix) <- paste(vsd$treatment, vsd$generation, sep="-")
+colnames(sampleDistMatrix) <- NULL
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows=sampleDists,
+         clustering_distance_cols=sampleDists,
+         col=colors)
+```
+
+### Visualize the global gene expression patterns using PCA
+
+```
+###############################################################
+
+# PCA to visualize global gene expression patterns
+
+# first transform the data for plotting using variance stabilization
+vsd <- vst(dds, blind=FALSE)
+
+pcaData <- plotPCA(vsd, intgroup=c("treatment","generation"), returnData=TRUE)
+percentVar <- round(100 * attr(data,"percentVar"))
+
+ggplot(pcaData, aes(PC1, PC2, color=treatment, shape=generation)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()
+  ```
+  
+### Make a more advanced PCA plot and plot by generation in four panels
+```
+###############################################################
+
+# Let's plot the PCA by generation in four panels
+
+data <- plotPCA(vsd, intgroup=c("treatment","generation"), returnData=TRUE)
+percentVar <- round(100 * attr(data,"percentVar"))
+
+###########  
+
+dataF0 <- subset(data, generation == 'F0')
+
+F0 <- ggplot(dataF0, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-10, 25) + xlim(-40, 10)+ # zoom for F0 with new assembly
+  #ylim(-40, 25) + xlim(-50, 50)+ # new assembly limits
+  #ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  ##theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #guides(shape = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  #guides(fill = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  #guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+
+F0
+
+
+#png("PCA_F0.png", res=300, height=5, width=5, units="in")
+
+#ggarrange(F0, nrow = 1, ncol=1)
+
+#dev.off()
+
+################# F2
+
+dataF2 <- subset(data, generation == 'F2')
+
+F2 <- ggplot(dataF2, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 25) + xlim(-50, 55)+
+  #ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,22,23), labels = c("Ambient", "Acidification","Warming"))+
+  # scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) + 
+  #scale_color_manual(values=c('black')) +
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A"), labels = c("Ambient", "Acidification","Warming"))+
+  theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #scale_size(guide="none") +
+  guides(shape = guide_legend(override.aes = list(shape = c( 21,22, 23))))+
+  guides(fill = guide_legend(override.aes = list(shape = c( 21,22, 23))))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+F2
+
+
+# png("PCA_F2.png", res=300, height=5, width=5, units="in")
+# 
+# ggarrange(F2, nrow = 1, ncol=1)
+# 
+# dev.off()
+
+# Yes - F2 is missing one ambient replicate
+
+################################ F4
+
+dataF4 <- subset(data, generation == 'F4')
+
+F4 <- ggplot(dataF4, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 25) + xlim(-50, 55)+ # limits with filtered assembly
+  #ylim(-20, 10) + xlim(-40, 25)+  # zoom with filtered assembly
+  #ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  # scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) + 
+  #scale_color_manual(values=c('black')) +
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  #theme(legend.position = c(0.83,0.85), legend.background = element_blank(), legend.box.background = element_rect(colour = "black")) +
+  #scale_size(guide="none") +
+  guides(shape = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  guides(fill = guide_legend(override.aes = list(shape = c( 21,22, 23, 24))))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+F4
+
+
+# png("PCA_F4.png", res=300, height=5, width=5, units="in")
+# 
+# ggarrange(F4, nrow = 1, ncol=1)
+# 
+# dev.off()
+
+
+################# F11
+
+dataF11 <- subset(data, generation == 'F11')
+
+F11 <- ggplot(dataF11, aes(PC1, PC2)) +
+  geom_point(size=10, stroke = 1.5, aes(fill=treatment, shape=treatment)) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  ylim(-40, 25) + xlim(-50, 55)+
+  #ylim(-40, 20) + xlim(-50, 30)+
+  scale_shape_manual(values=c(21,24), labels = c("Ambient", "OWA"))+
+  scale_fill_manual(values=c('#6699CC', "#CC3333"), labels = c("Ambient", "OWA"))+
+  guides(shape = guide_legend(override.aes = list(shape = c( 21, 24))))+
+  guides(fill = guide_legend(override.aes = list(shape = c( 21, 24))))+
+  guides(shape = guide_legend(override.aes = list(size = 5)))+
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(legend.title = element_blank())
+F11
+
+
+# png("PCA_F11.png", res=300, height=5, width=5, units="in")
+# 
+# ggarrange(F11, nrow = 1, ncol=1)
+# 
+# dev.off()
+
+ggarrange(F0, F2, F4, F11, nrow = 2, ncol=2)
+```
+
+### Explore differential expression with full model, GE ~ generation + treatment
+Now that we have a sense of our data, let’s explore models and contrasts for testing for differential expression
+```
+## Check on the DE results from the DESeq command way above ##
+
+resAM_OWA <- results(dds, name="treatment_OWA_vs_AM", alpha=0.05)
+
+resAM_OWA <- resAM_OWA[order(resAM_OWA$padj),]
+head(resAM_OWA)  
+
+summary(resAM_OWA)
+
+
+resAM_OW <- results(dds, name="treatment_OW_vs_AM", alpha=0.05)
+
+resAM_OW <- resAM_OW[order(resAM_OW$padj),]
+head(resAM_OW)  
+
+summary(resAM_OW)
+```
+
+It’s important to check the expression patterns of the top differentially genes to know that the model and tests are pulling out patterns you expect.
+
+
+```
+### Plot Individual genes ### 
+
+# Counts of specific top interaction gene! (important validatition that the normalization, model is working)
+d <-plotCounts(dds, gene="TRINITY_DN3600_c0_g1::TRINITY_DN3600_c0_g1_i2::g.16079::m.16079", intgroup = (c("treatment","generation")), returnData=TRUE)
+d
+
+p <-ggplot(d, aes(x=treatment, y=count, color=treatment, shape=generation)) + 
+  theme_minimal() + theme(text = element_text(size=20), panel.grid.major=element_line(colour="grey"))
+p <- p + geom_point(position=position_jitter(w=0.2,h=0), size=3)
+p <- p + stat_summary(fun = mean, geom = "line")
+p <- p + stat_summary(fun = mean, geom = "point", size=5, alpha=0.7) 
+p
+```
+
+So, the above model finds differences between treatment groups that are largely consistent across generations. We know based on our PCA that the responses to treatments are quite different across generations. So let’s try subsetting our data by generation and testing for differential expression.
+
+### Run another model that focuses on treatment effects for each generation
+```
+#################### MODEL NUMBER 2 - subset to focus on effect of treatment for each generation
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData=conds, 
+                              design= ~ treatment)
+
+dim(dds)
+# [1] 130580     38
+
+# Filter 
+dds <- dds[rowSums(counts(dds) >= 30) >= 28,]
+nrow(dds) 
+
+# Subset the DESeqDataSet to the specific level of the "generation" factor
+dds_sub <- subset(dds, select = generation == 'F0')
+dim(dds_sub)
+
+# Perform DESeq2 analysis on the subset
+dds_sub <- DESeq(dds_sub)
+
+resultsNames(dds_sub)
+
+res_F0_OWvAM <- results(dds_sub, name="treatment_OW_vs_AM", alpha=0.05)
+
+res_F0_OWvAM <- res_F0_OWvAM[order(res_F0_OWvAM$padj),]
+head(res_F0_OWvAM)
+
+summary(res_F0_OWvAM)
+
+
+### Plot Individual genes ### 
+
+# Counts of specific top interaction gene! (important validatition that the normalization, model is working)
+d <-plotCounts(dds_sub, gene="TRINITY_DN30_c0_g2::TRINITY_DN30_c0_g2_i1::g.130::m.130", intgroup = (c("treatment","generation")), returnData=TRUE)
+d
+
+p <-ggplot(d, aes(x=treatment, y=count, color=treatment, shape=generation)) + 
+  theme_minimal() + theme(text = element_text(size=20), panel.grid.major=element_line(colour="grey"))
+p <- p + geom_point(position=position_jitter(w=0.2,h=0), size=3)
+p <- p + stat_summary(fun = mean, geom = "point", size=5, alpha=0.7) 
+p
+```
+
+### Make an MA (or sideways volcano) plot now that we’re contrasting just two groups
+```
+# We can make an MA plot
+plotMA(res_F0_OWvAM, ylim=c(-4,4))
+```
+
+### Make a heatmap of the DEGs
+```
+########################################
+
+# Heatmap of top 20 genes sorted by pvalue
+
+library(pheatmap)
+
+# By environment
+vsd <- vst(dds_sub, blind=FALSE)
+
+topgenes <- head(rownames(res_F0_OWvAM),20)
+mat <- assay(vsd)[topgenes,]
+mat <- mat - rowMeans(mat)
+df <- as.data.frame(colData(dds_sub)[,c("generation","treatment")])
+pheatmap(mat, annotation_col=df)
+pheatmap(mat, annotation_col=df, cluster_cols = F)
+Let’s make a Venn (or Euler) Diagram
+Last but not least, since we have three contrasts, let’s make a Venn (or Euler) Diagram to see how similar or different the DGE is from Ambient for OA, OW, and OWA at F0!
+
+#################################################################
+
+#### PLOT OVERLAPPING DEGS IN VENN EULER DIAGRAM
+
+#################################################################
+
+# For OW vs AM
+res_F0_OWvAM <- results(dds_sub, name="treatment_OW_vs_AM", alpha=0.05)
+res_F0_OWvAM <- res_F0_OWvAM[order(res_F0_OWvAM$padj),]
+head(res_F0_OWvAM)
+
+summary(res_F0_OWvAM)
+res_F0_OWvAM <- res_F0_OWvAM[!is.na(res_F0_OWvAM$padj),]
+degs_F0_OWvAM <- row.names(res_F0_OWvAM[res_F0_OWvAM$padj < 0.05,])
+
+# For OA vs AM
+res_F0_OAvAM <- results(dds_sub, name="treatment_OA_vs_AM", alpha=0.05)
+res_F0_OAvAM <- res_F0_OAvAM[order(res_F0_OAvAM$padj),]
+head(res_F0_OAvAM)
+
+summary(res_F0_OAvAM)
+res_F0_OAvAM <- res_F0_OAvAM[!is.na(res_F0_OAvAM$padj),]
+degs_F0_OAvAM <- row.names(res_F0_OAvAM[res_F0_OAvAM$padj < 0.05,])
+
+# For OWA vs AM
+res_F0_OWAvAM <- results(dds_sub, name="treatment_OWA_vs_AM", alpha=0.05)
+res_F0_OWAvAM <- res_F0_OWAvAM[order(res_F0_OWAvAM$padj),]
+head(res_F0_OWAvAM)
+
+summary(res_F0_OWAvAM)
+res_F0_OWAvAM <- res_F0_OWAvAM[!is.na(res_F0_OWAvAM$padj),]
+degs_F0_OWAvAM <- row.names(res_F0_OWAvAM[res_F0_OWAvAM$padj < 0.05,])
+
+library(eulerr)
+
+# Total
+length(degs_F0_OAvAM)  # 520
+length(degs_F0_OWvAM)  # 4841 
+length(degs_F0_OWAvAM)  # 3742
+
+# Intersections
+length(intersect(degs_F0_OAvAM,degs_F0_OWvAM))  # 387
+length(intersect(degs_F0_OAvAM,degs_F0_OWAvAM))  # 340
+length(intersect(degs_F0_OWAvAM,degs_F0_OWvAM))  # 2585
+
+intWA <- intersect(degs_F0_OAvAM,degs_F0_OWvAM)
+length(intersect(degs_F0_OWAvAM,intWA)) # 308
+
+# Number unique
+
+520-387-340+308 # 101 OA
+4841-387-2585+308 # 2177 OW 
+3742-340-2585+308 # 1125 OWA
+
+387-308 # 79 OA & OW
+340-308 # 32 OA & OWA
+2585-308 # 2277 OWA & OW
+
+
+# Note that the names are important and have to be specific to line up the diagram
+fit1 <- euler(c("OA" = 101, "OW" = 2177, "OWA" = 1125, "OA&OW" = 79, "OA&OWA" = 32, "OW&OWA" = 2277, "OA&OW&OWA" = 308))
+
+
+plot(fit1,  lty = 1:3, quantities = TRUE)
+# lty changes the lines
+
+plot(fit1, quantities = TRUE, fill = "transparent",
+     lty = 1:3,
+     labels = list(font = 4))
+
+
+#cross check
+2177+2277+308+79 # 4841, total OW
+1125+2277+308+32 # 3742, total OWA
+101+32+79+308    # 520, total OA
+```
+
+### Get the trait data
+Use FileZilla to transfer Ahud_trait_data.txt to your machine. It can be found on ecogen.uvm.edu:/data/project_data/RNAseq/traitdata.
+
+### Work through Weighted Gene Co-Expression Network Analysis (WGCNA)
+WGCNA is a useful tool for identifying correlated genes (modules) and testing if those modules (or eigengenes) are associated with specific traits of interest. You’ll see from the link above that the WGCNA tutorials are out of data and difficult to followup. Many other people have made useful tutorials including ones on YouTube. One I used to refresh on WGCNA was by the cleverly named Bioinformagician.
+
+Get set up; Load the packages/libraries we will need
+```
+## Set your working directory
+setwd("YOUR/WORKING/DIRECTORY")
+
+# Load the package
+library(WGCNA);
+# The following setting is important, do not omit.
+options(stringsAsFactors = FALSE);
+
+library(DESeq2)
+library(ggplot2)
+
+library(tidyverse)
+
+# install.packages("remotes")
+# remotes::install_github("kevinblighe/CorLevelPlot")
+
+library(CorLevelPlot) 
+library(gridExtra)
+
+library(Rmisc) 
+```
+
+### Import the counts matrix and metadata and filter using DESeq2
+```
+#1. Import the counts matrix and metadata and filter using DESeq2
+
+countsTable <- read.table("salmon.isoform.counts.matrix.filteredAssembly", header=TRUE, row.names=1)
+head(countsTable)
+dim(countsTable)
+
+countsTableRound <- round(countsTable) # bc DESeq2 doesn't like decimals (and Salmon outputs data with decimals)
+head(countsTableRound)
+
+#import the sample description table
+# conds <- read.delim("ahud_samples_R.txt", header=TRUE, stringsAsFactors = TRUE, row.names=1)
+# head(conds)
+
+sample_metadata = read.table(file = "Ahud_trait_data.txt",header=T, row.names = 1)
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData=sample_metadata, 
+                              design= ~ 1)
+
+dim(dds)
+
+# Filter out genes with too few reads - remove all genes with counts < 15 in more than 75% of samples, so ~28)
+## suggested by WGCNA on RNAseq FAQ
+
+dds <- dds[rowSums(counts(dds) >= 15) >= 28,]
+nrow(dds) 
+# [1] 25260, that have at least 15 reads (a.k.a counts) in 75% of the samples
+
+# Run the DESeq model to test for differential gene expression
+dds <- DESeq(dds)
+``` 
+
+### Look for outliers, particularly outlier samples
+
+```
+# 2. QC - outlier detection ------------------------------------------------
+# detect outlier genes
+
+gsg <- goodSamplesGenes(t(countsTable))
+summary(gsg)
+gsg$allOK
+
+table(gsg$goodGenes)
+table(gsg$goodSamples)
+
+
+# detect outlier samples - hierarchical clustering - method 1
+htree <- hclust(dist(t(countsTable)), method = "average")
+plot(htree) 
+ 
+
+
+# pca - method 2
+
+pca <- prcomp(t(countsTable))
+pca.dat <- pca$x
+
+pca.var <- pca$sdev^2
+pca.var.percent <- round(pca.var/sum(pca.var)*100, digits = 2)
+
+pca.dat <- as.data.frame(pca.dat)
+
+ggplot(pca.dat, aes(PC1, PC2)) +
+  geom_point() +
+  geom_text(label = rownames(pca.dat)) +
+  labs(x = paste0('PC1: ', pca.var.percent[1], ' %'),
+       y = paste0('PC2: ', pca.var.percent[2], ' %'))
+       ```
+       
+Luckily, we don’t have any, so we can move on. Otherwise we would have to filter our data to exclude those samples.
+
+### Normalize using DESeq2
+```
+
+# 3. Normalization ----------------------------------------------------------------------
+
+colData <- row.names(sample_metadata)
+
+# making the rownames and column names identical
+all(rownames(colData) %in% colnames(countsTableRound)) # to see if all samples are present in both
+all(rownames(colData) == colnames(countsTableRound))  # to see if all samples are in the same order
+
+
+
+# perform variance stabilization
+dds_norm <- vst(dds)
+# dds_norm <- vst(normalized_counts)
+
+# get normalized counts
+norm.counts <- assay(dds_norm) %>% 
+  t()
+  ```
+  
+### Check the quality of the data by sample clustering and visualization
+
+This is a critical step and one that can be played with iteratively to determine the “best” soft_power for clustering our genes in a biologically meaningful way.
+
+```
+# 4. Network Construction  ---------------------------------------------------
+# Choose a set of soft-thresholding powers
+power <- c(c(1:10), seq(from = 12, to = 50, by = 2))
+
+# Call the network topology analysis function; this step takes a couple minutes
+sft <- pickSoftThreshold(norm.counts,
+                         powerVector = power,
+                         networkType = "signed",
+                         verbose = 5)
+
+
+sft.data <- sft$fitIndices
+
+# visualization to pick power
+
+a1 <- ggplot(sft.data, aes(Power, SFT.R.sq, label = Power)) +
+  geom_point() +
+  geom_text(nudge_y = 0.1) +
+  geom_hline(yintercept = 0.8, color = 'red') +
+  labs(x = 'Power', y = 'Scale free topology model fit, signed R^2') +
+  theme_classic()
+
+
+a2 <- ggplot(sft.data, aes(Power, mean.k., label = Power)) +
+  geom_point() +
+  geom_text(nudge_y = 0.1) +
+  labs(x = 'Power', y = 'Mean Connectivity') +
+  theme_classic()
+
+
+grid.arrange(a1, a2, nrow = 2)
+# based on this plot, choose a soft power to maximize R^2 (above 0.8) and minimize connectivity
+# for these ahud data: 6-8; Higher R2 should yield more modules.
+
+
+# convert matrix to numeric
+norm.counts[] <- sapply(norm.counts, as.numeric)
+
+soft_power <- 6
+temp_cor <- cor
+cor <- WGCNA::cor # use the 'cor' function from the WGCNA package
+
+
+# this step also takes a few minutes; ideally your maxBlockSize is larger than your number of genes to run the memory-intensive network construction all at once.
+bwnet <- blockwiseModules(norm.counts,
+                          maxBlockSize = 26000,
+                          minModuleSize = 30, 
+                          reassignThreshold=0,
+                          TOMType = "signed",
+                          power = soft_power,
+                          mergeCutHeight = 0.25,
+                          numericLabels = F,
+                          randomSeed = 1234,
+                          verbose = 3)
+
+# TOMtype (Topological Overlap Matrix type) parameter - unsigned - doesn't consider positive/negative co-expression
+# signed - when you want to consider the direction of co-expression interaction, e.g., activating or inhibiting
+# WGCNA often uses a dendrogram-based approach to identify modules. The choice of the 
+# height cut in the dendrogram can determine the number of modules. Selecting a higher
+# cut height results in fewer, larger modules, while a lower cut height leads to more, 
+# smaller modules.
+
+cor <- temp_cor
+```
+
+### Explore the eigengenes
+```
+# 5. Module Eigengenes ---------------------------------------------------------
+module_eigengenes <- bwnet$MEs
+
+head(module_eigengenes)
+
+
+# get number of genes for each module
+table(bwnet$colors)
+
+# Plot the dendrogram and the module colors before and after merging underneath
+plotDendroAndColors(bwnet$dendrograms[[1]], cbind(bwnet$unmergedColors, bwnet$colors),
+                    c("unmerged", "merged"),
+                    dendroLabels = FALSE,
+                    addGuide = TRUE,
+                    hang= 0.03,
+                    guideHang = 0.05)
+
+# grey module = all genes that doesn't fall into other modules were assigned to the grey module
+# with higher soft power, more genes fall into the grey module
+```
+
+### Associate modules with traits
+```
+# 6A. Relate modules to traits --------------------------------------------------
+# module trait associations
+
+traits <- sample_metadata[, c(5,8,11,14,17)]
+
+
+# Define numbers of genes and samples
+nSamples <- nrow(norm.counts)
+nGenes <- ncol(norm.counts)
+
+
+module.trait.corr <- cor(module_eigengenes, traits, use = 'p')
+module.trait.corr.pvals <- corPvalueStudent(module.trait.corr, nSamples)
+
+
+
+# visualize module-trait association as a heatmap
+
+heatmap.data <- merge(module_eigengenes, traits, by = 'row.names')
+
+head(heatmap.data)
+
+heatmap.data <- heatmap.data %>% 
+  column_to_rownames(var = 'Row.names')
+
+
+names(heatmap.data)
+
+CorLevelPlot(heatmap.data,
+             x = names(heatmap.data)[12:16],
+             y = names(heatmap.data)[1:11],
+             col = c("blue1", "skyblue", "white", "pink", "red"))
+
+
+
+module.gene.mapping <- as.data.frame(bwnet$colors) # assigns module membership to each gene
+module.gene.mapping %>% 
+  filter(`bwnet$colors` == 'yellow') %>% 
+  rownames()
+
+groups <- sample_metadata[,c(3,1)]
+module_eigengene.metadata <- merge(groups, heatmap.data, by = 'row.names')
+
+#Create a summary data frame of a particular module eigengene information
+MEyellow_summary <- summarySE(module_eigengene.metadata, measurevar="MEyellow", groupvars=c("Generation","treatment"))
+
+#Plot a line interaction plot of a particular module eigengene
+ggplot(MEyellow_summary, aes(x=as.factor(Generation), y=MEyellow, color=treatment, fill = treatment, shape = treatment)) +
+  geom_point(size=5, stroke = 1.5 ) +
+  geom_errorbar(aes(ymin=MEyellow-se, ymax=MEyellow+se), width=.15) +
+  geom_line(aes(color=treatment, group=treatment, linetype = treatment)) +
+  scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) +
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  xlab("Generation") +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(panel.grid.minor.y = element_blank(), legend.position = "none", plot.margin = margin(0,6,0,6))
+```
+### Plot individual genes to see how eigengene patterns match gene expression patterns
+
+```
+# 6B. Intramodular analysis: Identifying driver genes ---------------
+
+# Get top hub genes (genes with highest connectivity in the network)
+hubs  <-  chooseTopHubInEachModule(norm.counts, bwnet$colors, type = "signed", omitColors = "")
+hubs
+
+### Plot Individual genes  to check! ### 
+
+d <-plotCounts(dds, gene="TRINITY_DN11845_c0_g1::TRINITY_DN11845_c0_g1_i9::g.36434::m.36434", intgroup = (c("treatment","Generation")), returnData=TRUE)
+d_summary <- summarySE(d, measurevar = "count", groupvars=c("Generation","treatment"))
+
+ggplot(d_summary, aes(x=Generation, y=count, color=treatment, fill = treatment, shape = treatment)) +
+  geom_point(size=5, stroke = 1.5 ) +
+  geom_errorbar(aes(ymin=count-se, ymax=count+se), width=.15) +
+  geom_line(aes(color=treatment, group=treatment, linetype = treatment)) +
+  scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) +
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  xlab("Generation") +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(panel.grid.minor.y = element_blank(), legend.position = "none", plot.margin = margin(0,6,0,6))
+
+
+
+# Calculate the module membership and the associated p-values
+
+# The module membership/intramodular connectivity is calculated as the correlation of the eigengene and the gene expression profile. 
+# This quantifies the similarity of all genes on the array to every module.
+
+module.membership.measure <- cor(module_eigengenes, norm.counts, use = 'p')
+module.membership.measure.pvals <- corPvalueStudent(module.membership.measure, nSamples)
+
+
+module.membership.measure.pvals[1:10,1:10]
+```
+
+### Make a heat map of gene expressions within modules
+```
+# Make a heat map of gene expressions within modules.
+# Use the norm.counts matrix, subset based on module membership
+t_norm.counts <- norm.counts %>% t() %>% as.data.frame()
+
+# Yellow module
+yellow_transcripts <- module.gene.mapping %>% 
+  filter(`bwnet$colors` == 'yellow') %>% 
+  rownames()
+
+t_norm.counts_yellow <- t_norm.counts %>% 
+  filter(row.names(t_norm.counts) %in% yellow_transcripts)
+
+t_norm.counts_yellow <- t_norm.counts_yellow - rowMeans(t_norm.counts_yellow)
+df <- as.data.frame(colData(dds)[,c("eneration","treatment")])
+
+#blue to yellow color scheme
+paletteLength <- 50
+myColor <- colorRampPalette(c("dodgerblue", "black", "yellow"))(paletteLength)
+myBreaks <- c(seq(min(t_norm.counts_yellow), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(t_norm.counts_yellow)/paletteLength, max(t_norm.counts_yellow), length.out=floor(paletteLength/2)))
+pheatmap(t_norm.counts_yellow, color = myColor, breaks = myBreaks,
+         show_colnames = FALSE, show_rownames = FALSE, annotation_col = df, main = "Yellow")
+         ```
+         
+### “What’s missing” in hands-on coding sessions
+Choosing which programs to use. But you’re getting a sense for this through noting the programs used and carefully reading and discussing our discussion papers.
+Installing the programs for use.
+Troubleshooting code (though we certainly do get to experience some of that in class).
+Moving from one file type to the next, i.e., making your output from one program your input for the next.
+Exploring parameter space, e.g., all the micro-decisions in each program. This may be the Homework #2 assignment!
+The bolded points above take a lot of time and troubleshooting “behind the scenes.” We share this with you just for a bit of a “reality check” so you’re not surprised when you go to do these sorts of analyses in your dissertation research. Remember: Google, ChatGPT, your instructors and committee members, and your friends are your friends!
+
+### Continue to work through Weighted Gene Co-Expression Network Analysis (WGCNA)
+Recall that WGCNA is a useful tool for identifying correlated genes (modules) and testing if those modules (or eigengenes) are associated with specific traits of interest.
+
+Pick up where you left off in your previous R script.
+
+If you weren’t able to make the blockwise modules (bwnet) object, I’ve put one on the class server that you can transfer to your machine and load. /data/project_data/RNAseq/analyses/WGCNA/
+```
+# What I did to save it:
+saveRDS(bwnet, file = "bwnet.rds")
+
+# To load the object
+bwnet <- readRDS("bwnet.rds")
+```
+
+### Picking up the code from where we left off last class (you can continue to add to your previous script)
+E. Explore the eigengenes
+```
+# 5. Module Eigengenes ---------------------------------------------------------
+module_eigengenes <- bwnet$MEs
+
+head(module_eigengenes)
+
+
+# get number of genes for each module
+table(bwnet$colors)
+
+# Plot the dendrogram and the module colors before and after merging underneath
+plotDendroAndColors(bwnet$dendrograms[[1]], cbind(bwnet$unmergedColors, bwnet$colors),
+                    c("unmerged", "merged"),
+                    dendroLabels = FALSE,
+                    addGuide = TRUE,
+                    hang= 0.03,
+                    guideHang = 0.05)
+
+# grey module = all genes that doesn't fall into other modules were assigned to the grey module
+# with higher soft power, more genes fall into the grey module
+```
+
+### Associate modules with traits
+```
+# 6A. Relate modules to traits --------------------------------------------------
+# module trait associations
+
+traits <- sample_metadata[, c(5,8,11,14,17)]
+
+
+# Define numbers of genes and samples
+nSamples <- nrow(norm.counts)
+nGenes <- ncol(norm.counts)
+
+
+module.trait.corr <- cor(module_eigengenes, traits, use = 'p')
+module.trait.corr.pvals <- corPvalueStudent(module.trait.corr, nSamples)
+
+
+
+# visualize module-trait association as a heatmap
+
+heatmap.data <- merge(module_eigengenes, traits, by = 'row.names')
+
+head(heatmap.data)
+
+heatmap.data <- heatmap.data %>% 
+  column_to_rownames(var = 'Row.names')
+
+
+names(heatmap.data)
+
+CorLevelPlot(heatmap.data,
+             x = names(heatmap.data)[12:16],
+             y = names(heatmap.data)[1:11],
+             col = c("blue1", "skyblue", "white", "pink", "red"))
+
+
+
+module.gene.mapping <- as.data.frame(bwnet$colors) # assigns module membership to each gene
+module.gene.mapping %>% 
+  filter(`bwnet$colors` == 'yellow') %>% 
+  rownames()
+
+groups <- sample_metadata[,c(3,1)]
+module_eigengene.metadata <- merge(groups, heatmap.data, by = 'row.names')
+
+#Create a summary data frame of a particular module eigengene information
+MEyellow_summary <- summarySE(module_eigengene.metadata, measurevar="MEyellow", groupvars=c("Generation","treatment"))
+
+#Plot a line interaction plot of a particular module eigengene
+ggplot(MEyellow_summary, aes(x=as.factor(Generation), y=MEyellow, color=treatment, fill = treatment, shape = treatment)) +
+  geom_point(size=5, stroke = 1.5 ) +
+  geom_errorbar(aes(ymin=MEyellow-se, ymax=MEyellow+se), width=.15) +
+  geom_line(aes(color=treatment, group=treatment, linetype = treatment)) +
+  scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) +
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  xlab("Generation") +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(panel.grid.minor.y = element_blank(), legend.position = "none", plot.margin = margin(0,6,0,6))
+  
+  ```
+### Plot individual genes to see how eigengene patterns match gene expression patterns
+
+```
+# 6B. Intramodular analysis: Identifying driver genes ---------------
+
+# Get top hub genes (genes with highest connectivity in the network)
+hubs  <-  chooseTopHubInEachModule(norm.counts, bwnet$colors, type = "signed", omitColors = "")
+hubs
+
+### Plot Individual genes  to check! ### 
+
+d <-plotCounts(dds, gene="TRINITY_DN11845_c0_g1::TRINITY_DN11845_c0_g1_i9::g.36434::m.36434", intgroup = (c("treatment","Generation")), returnData=TRUE)
+d_summary <- summarySE(d, measurevar = "count", groupvars=c("Generation","treatment"))
+
+ggplot(d_summary, aes(x=Generation, y=count, color=treatment, fill = treatment, shape = treatment)) +
+  geom_point(size=5, stroke = 1.5 ) +
+  geom_errorbar(aes(ymin=count-se, ymax=count+se), width=.15) +
+  geom_line(aes(color=treatment, group=treatment, linetype = treatment)) +
+  scale_color_manual(values = c('#6699CC',"#F2AD00","#00A08A", "#CC3333")) +
+  scale_shape_manual(values=c(21,22,23,24), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  scale_fill_manual(values=c('#6699CC',"#F2AD00","#00A08A", "#CC3333"), labels = c("Ambient", "Acidification","Warming", "OWA"))+
+  xlab("Generation") +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 4))+
+  theme(text = element_text(size = 20)) +
+  theme(panel.grid.minor.y = element_blank(), legend.position = "none", plot.margin = margin(0,6,0,6))
+
+
+
+# Calculate the module membership and the associated p-values
+
+# The module membership/intramodular connectivity is calculated as the correlation of the eigengene and the gene expression profile. 
+# This quantifies the similarity of all genes on the array to every module.
+
+module.membership.measure <- cor(module_eigengenes, norm.counts, use = 'p')
+module.membership.measure.pvals <- corPvalueStudent(module.membership.measure, nSamples)
+
+
+module.membership.measure.pvals[1:10,1:10]
+```
+### Make a heat map of gene expressions within modules
+```
+# Make a heat map of gene expressions within modules.
+# Use the norm.counts matrix, subset based on module membership
+t_norm.counts <- norm.counts %>% t() %>% as.data.frame()
+
+# Yellow module
+yellow_transcripts <- module.gene.mapping %>% 
+  filter(`bwnet$colors` == 'yellow') %>% 
+  rownames()
+
+t_norm.counts_yellow <- t_norm.counts %>% 
+  filter(row.names(t_norm.counts) %in% yellow_transcripts)
+
+t_norm.counts_yellow <- t_norm.counts_yellow - rowMeans(t_norm.counts_yellow)
+df <- as.data.frame(colData(dds)[,c("eneration","treatment")])
+
+#blue to yellow color scheme
+paletteLength <- 50
+myColor <- colorRampPalette(c("dodgerblue", "black", "yellow"))(paletteLength)
+myBreaks <- c(seq(min(t_norm.counts_yellow), 0, length.out=ceiling(paletteLength/2) + 1), 
+              seq(max(t_norm.counts_yellow)/paletteLength, max(t_norm.counts_yellow), length.out=floor(paletteLength/2)))
+pheatmap(t_norm.counts_yellow, color = myColor, breaks = myBreaks,
+         show_colnames = FALSE, show_rownames = FALSE, annotation_col = df, main = "Yellow")
+```
+
+### Perform Gene Ontology (GO) functional enrichment analyses using GOMWU with our DESeq2 results.
+There are two general types of functional enrichment analyses: those that use a DGE significance cutoff (e.g., dividing genes into differentially expressed, padj < 0.05, and not and running a Fisher’s exact test) and those that use the whole distribution (MWU rank-based correlation or Kolmorgorov-Smirnov test). I generally prefer using the whole distribution, more data, and doesn’t depend on an arbitrary cutoff.
+
+There are many ways to characterize the function of genes. One of the commonly used databases and classification systems is that of Gene Ontology (GO), which is a knowledgebase that “provides a computational representation of our current scientific knowledge about the functions of genes (or, more properly, the protein and non-coding RNA molecules produced by genes) from many different organisms, from humans to bacteria.” There are three types of GO categories, those that describe: Molecular Function, Cellular Component, and Biological Process. I find the Biological Process to be most informative.
+
+There are also many ways to test for the non-random distribution of genes with specific functions in a list of scores, such as p-values, logFoldChange, FST, etc. The package we will use for this tutorial is called GO Mann-Whitney U or GOMWU and was created by Dr. Misha Matz of UT Austin.
+
+GOMWU requires all of the following to be in one directory:
+
+2 user provided files:
+a table of measure of interest: two columns of comma-separated values: gene id, continuous measure of change such as log(fold-change).
+table of GO annotations for your sequences: two-column (gene id - GO terms), tab-delimited, one line per gene, multiple GO terms separated by semicolon.
+a set of scripts: GO_MWU.R, gomwu_a.pl, gomwu_b.pl, gomwu.functions.R (we only need to edit the first one)
+a GO database, hierarchy file (go.obo, http://www.geneontology.org/GO.downloads.ontology.shtml) * I’ve already downloaded the most recent version for us to use.
+The scripts, the GO database, and the annotations table are already assembled and can be found in /data/project_data/RNAseq/analyses/GOMWU. You can copy all of those files to your personal machine or you can move the files to your home directory on the server and run the code in R on our class server. The only part we need to make is the measures of interest based on DESeq2 results.
+
+### DESeq2 to GOMWU measure/scores files
+We want to save the results files for our contrasts of interest for which we’d like to test for functional enrichment. We’ll focus on F0 contrasts of AM vs OW, OWA, and OA. We’ll run three tests focused on BP and compare enrichment across these three contrasts. We’ll use LFC as our metric, but we could also choose p-value or stat.
+```
+## Set your working directory
+setwd("~/github/hudsonica")
+
+## Import the libraries that we're likely to need in this session
+library(DESeq2)
+
+# Try with new counts table from filtered transcriptome assembly
+countsTable <- read.table("salmon.isoform.counts.matrix.filteredAssembly", header=TRUE, row.names=1)
+
+
+head(countsTable)
+dim(countsTable)
+#[1] 130580     38 - genes
+# [1] 349516     38 - isoforms
+# [1] 67916    38 - filtered assembly
+
+countsTableRound <- round(countsTable) # bc DESeq2 doesn't like decimals (and Salmon outputs data with decimals)
+head(countsTableRound)
+
+#import the sample discription table
+conds <- read.delim("ahud_samples_R.txt", header=TRUE, stringsAsFactors = TRUE, row.names=1)
+head(conds)
+
+#################### MODEL NUMBER 2 - subset to focus on effect of treatment for each generation
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData=conds, 
+                              design= ~ treatment)
+
+dim(dds)
+# [1] 130580     38
+
+# Filter 
+dds <- dds[rowSums(counts(dds) >= 30) >= 28,]
+nrow(dds) 
+
+# Subset the DESeqDataSet to the specific level of the "generation" factor
+dds_F0 <- subset(dds, select = generation == 'F0')
+dim(dds_F0)
+
+# Perform DESeq2 analysis on the subset
+dds_F0 <- DESeq(dds_F0)
+
+resultsNames(dds_F0)
+# [1] "Intercept"           "treatment_OA_vs_AM"  "treatment_OW_vs_AM"  "treatment_OWA_vs_AM"
+
+res_F0_OWvAM <- results(dds_F0, name="treatment_OW_vs_AM", alpha=0.05)
+
+res_F0_OWvAM <- res_F0_OWvAM[order(res_F0_OWvAM$padj),]
+head(res_F0_OWvAM) 
+
+summary(res_F0_OWvAM)
+
+
+res_F0_OWAvAM <- results(dds_F0, name="treatment_OWA_vs_AM", alpha=0.05)
+
+res_F0_OWAvAM <- res_F0_OWAvAM[order(res_F0_OWAvAM$padj),]
+head(res_F0_OWAvAM) 
+
+summary(res_F0_OWAvAM)
+
+
+res_F0_OAvAM <- results(dds_F0, name="treatment_OA_vs_AM", alpha=0.05)
+
+res_F0_OAvAM <- res_F0_OAvAM[order(res_F0_OAvAM$padj),]
+head(res_F0_OAvAM)
+
+summary(res_F0_OAvAM)
+
+
+################## Save all the results as csv to go into GOMWU
+
+library(tidyr)
+
+# Make the rownames a separate column called transcriptID and make it all a dataframe
+res_F0_OWvAM_df <- data.frame(transcriptID = rownames(res_F0_OWvAM), res_F0_OWvAM)
+
+# Split the "transcriptID" column by double colons and create new columns of the parts
+res_F0_OWvAM_df <- separate(res_F0_OWvAM_df, transcriptID, into = c("part1", "part2", "part3", "rest"), sep = "::", remove = FALSE) 
+
+# Create a new column by concatenating "part1" and "part2" with double colons in between
+res_F0_OWvAM_df$transcriptID_trim <- paste(res_F0_OWvAM_df$part1, res_F0_OWvAM_df$part2, sep = "::")
+
+# Optional: Remove the "part1" and "part2" columns from the dataframe
+res_F0_OWvAM_df <- res_F0_OWvAM_df[, !(names(res_F0_OWvAM_df) %in% c("part1", "part2", "part3", "rest"))]
+
+write.table(res_F0_OWvAM_df, file = "res_F0_OWvAM.txt", sep = "\t", row.names = F)   # saves the full original for the records
+
+# Select the two columns we want to save for the GOMWU analysis
+selected_columns_OW <- res_F0_OWvAM_df[c("transcriptID_trim", "log2FoldChange")]
+
+# Save the selected columns as a CSV file
+write.csv(selected_columns_OW, file = "res_F0_OWvAM_LFC.csv", quote = FALSE, row.names = F) # saves the selected columns for GOMWU
+
+
+############ Now for OWA
+
+# Make the rownames a separate column called transcriptID and make it all a dataframe
+res_F0_OWAvAM_df <- data.frame(transcriptID = rownames(res_F0_OWAvAM), res_F0_OWAvAM)
+
+# Split the "transcriptID" column by double colons and create new columns of the parts
+res_F0_OWAvAM_df <- separate(res_F0_OWAvAM_df, transcriptID, into = c("part1", "part2", "part3", "rest"), sep = "::", remove = FALSE) 
+
+# Create a new column by concatenating "part1" and "part2" with double colons in between
+res_F0_OWAvAM_df$transcriptID_trim <- paste(res_F0_OWAvAM_df$part1, res_F0_OWAvAM_df$part2, sep = "::")
+
+# Optional: Remove the "part1" and "part2" columns from the dataframe
+res_F0_OWAvAM_df <- res_F0_OWAvAM_df[, !(names(res_F0_OWAvAM_df) %in% c("part1", "part2", "part3", "rest"))]
+write.table(res_F0_OWAvAM_df, file = "res_F0_OWAvAM.txt", sep = "\t", row.names = F)   # saves the full original for the records
+
+# Select the two columns we want to save for the GOMWU analysis
+selected_columns_OWA <- res_F0_OWAvAM_df[c("transcriptID_trim", "log2FoldChange")]
+
+# Save the selected columns as a CSV file
+write.csv(selected_columns_OWA, file = "res_F0_OWAvAM_LFC.csv", quote = FALSE, row.names = F) # saves the selected columns for GOMWU
+
+
+
+############ Now for OA
+
+# Make the rownames a separate column called transcriptID and make it all a dataframe
+res_F0_OAvAM_df <- data.frame(transcriptID = rownames(res_F0_OAvAM), res_F0_OAvAM)
+
+# Split the "transcriptID" column by double colons and create new columns of the parts
+res_F0_OAvAM_df <- separate(res_F0_OAvAM_df, transcriptID, into = c("part1", "part2", "part3", "rest"), sep = "::", remove = FALSE) 
+
+# Create a new column by concatenating "part1" and "part2" with double colons in between
+res_F0_OAvAM_df$transcriptID_trim <- paste(res_F0_OAvAM_df$part1, res_F0_OAvAM_df$part2, sep = "::")
+
+# Optional: Remove the "part1" and "part2" columns from the dataframe
+res_F0_OAvAM_df <- res_F0_OAvAM_df[, !(names(res_F0_OAvAM_df) %in% c("part1", "part2", "part3", "rest"))]
+write.table(res_F0_OAvAM_df, file = "res_F0_OAvAM.txt", sep = "\t", row.names = F)   # saves the full original for the records
+
+# Select the two columns we want to save for the GOMWU analysis
+selected_columns_OA <- res_F0_OAvAM_df[c("transcriptID_trim", "log2FoldChange")]
+
+# Save the selected columns as a CSV file
+write.csv(selected_columns_OA, file = "res_F0_OAvAM_LFC.csv", quote = FALSE, row.names = F) # saves the selected columns for GOMWU
+```
+Make sure your .csv, measures files are in the same directory with your GOMWU scripts.
+
+### Edit the GO_MWU.R script and run the program at least three times, one for each contrast!
+Open the GO_MWU.R in R studio. There we will edit the two input filenames and confirm the sizes of GO categories to which to limit the analysis (e.g., between 10 and 500 gene members in a GO category). Let’s discuss why to do this!
+
+
+
+### Biological interpretation?
+What do these results mean? How do enrichment results vary based on treatment contrast? Are there any reasons to be concerned about these results? What next steps would you want to take?
+
+### GEA analysis
+There’s a substantial literature on GEA methods in landscape genomics, but a good background paper is Rellstab et al. (2015).
+
+For any GEA analysis, you essentially need two things:
+
+Genotype data from individuals sampled across one or more environmental gradients.
+Environmental data (like climate) you want to test as drivers of the selection on allele frequencies.
+Our approach will not be to test every SNP locus with GEA, but rather just test the outlier loci we identified from pcANGSD as showing evidence of selection. By pairing that with the GEA, we can refine our inference of selection by asking if these outliers are likely selected on as a result of one or more environmental gradients.
+
+### Re-visit the pcANGSD results to get necessary outlier info and covariates
+(a). Last session, we produced a list of outlier loci, but we had some trouble applying our significance cutoff and exporting our list of outlier loci. That’s take a second and make sure that’s good now.
+
+In R:
+```
+library(RcppCNPy) # for reading python numpy (.npy) files
+
+setwd("")
+
+list.files()
+
+### read in selection statistics (these are chi^2 distributed)
+
+s<-npyLoad("allRS_poly.selection.npy")
+
+# convert test statistic to p-value
+pval <- as.data.frame(1-pchisq(s,1))
+names(pval) = c("p_PC1","p_PC2")
+
+## read positions
+p <- read.table("allRS_poly_mafs.sites",sep="\t",header=T, stringsAsFactors=T)
+dim(p)
+
+p_filtered = p[which(p$kept_sites==1),]
+dim(p_filtered)
+
+# get all the outliers with p-values below some cutoff
+cutoff=1e-3   
+
+outliers_PC1 <- p_filtered[which(pval$p_PC1<cutoff),c("chromo","position")]
+
+# how many outlier loci < the cutoff?
+dim(outliers_PC1)[1]
+
+
+# write them out to a file
+write.table(outliers_PC1,
+  "allRS_poly_outliers_PC1.txt", 
+  sep=":",
+  quote=F,
+  row.names=F,
+  col.names=F)
+  
+  ```
+  
+### We also want to export the scores for each of our individuals along the genetic PC1 and PC2 axes. We’ll use these scores as covariates in our GEA model to control for the overall effects of population structure when testing for climate association.
+
+```
+COV <- as.matrix(read.table("allRS_poly.cov"))
+
+PCA <- eigen(COV)
+
+data=as.data.frame(PCA$vectors)
+data=data[,c(1:2)] # the second number here is the number of PC axes you want to keep
+
+write.table(data,
+            "allRS_poly_genPC1_2.txt",
+            sep="\t",
+            quote=F,
+            row.names=F,
+            col.names=F)
+ ```           
+            
+### Getting Bioclim climate data for our red spruce samples
+We can also use R to query the Worldclim climate database and pull out the bioclim variables for each of our samples based on their lat/longs.
+
+Remember, the following code is in R, not bash ;)
+
+```
+# You made need to use "install.packages" if you don't have some of the below libraries already
+
+library(raster)
+library(FactoMineR)
+library(factoextra)
+library(corrplot)
+
+setwd("")
+
+bio <- getData("worldclim",var="bio",res=10)
+
+coords <- read.csv("https://www.uvm.edu/~kellrlab/forClass/colebrookSampleMetaData.csv", header=T)
+
+The chunk below refers to your bamlist file that you transferred during last week's PCA/admixture analysis.  It should be the same one you want to use here -- if your sample list for analysis changes in the future, you'll need a different bamlist!
+
+names <- read.table("allRS_bam.list")
+names <- unlist(strsplit(basename(as.character(names[,1])), split = ".sorted.rmdup.bam"))
+split = strsplit(names, "_")
+pops <- data.frame(names[1:95], do.call(rbind, split[1:95]))
+names(pops) = c("Ind", "Pop", "Row", "Col")
+
+angsd_coords <- merge(pops, coords, by.x="Ind", by.y="Tree")
+
+points <- SpatialPoints(angsd_coords[c("Longitude","Latitude")])
+
+clim <- extract(bio,points)
+
+angsd_coords_clim <- cbind.data.frame(angsd_coords,clim)
+str(angsd_coords_clim)
+```
+
+And just like that, we’ve got Bioclim data for our samples!
+Now, we don’t want to test all 19 variables in our GEA, but rather just one or a few that seem to capture the climate gradients in our samples.
+
+For this, we can use PCA on the climate data (so, an environmental, not a genetic PCA in this case). Using the cliamte PCA can then let us see which variables most strongly define the climate space of red spruce, and we can then use these for our GEA test.
+
+In R:
+```
+# Make the climate PCA:
+
+clim_PCA = PCA(angsd_coords_clim[,15:33], graph=T)
+
+# Get a screeplot of cliamte PCA eigenvalues
+
+fviz_eig(clim_PCA)
+
+# What is the climate PCA space our red spruce pops occupy?
+
+fviz_pca_biplot(clim_PCA, 
+             geom.ind="point",
+             col.ind = angsd_coords_clim$Latitude, 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             title="Climate PCA (Bioclim)",
+             legend.title="Latitude")
+
+# Which variables show the strongest correlation on the first 2 climate PC axes?
+
+dimdesc(clim_PCA)[1:2]
+```
+
+Let’s export the Bioclim variable most important for each of these axes:
+
+```
+# Replace "XX" with your bio variable most significant on climate PC1:
+
+write.table(scale(angsd_coords_clim["bioXX"]),
+            "allRS_bioXX.txt",
+            sep="\t",
+            quote=F,
+            row.names = F,
+            col.names=F)
+
+
+# Replace "YY" with your bio variable most significant on climate PC2:  
+
+write.table(scale(angsd_coords_clim["bioYY"]),
+            "allRS_bioYY.txt",
+            sep="\t",
+            quote=F,
+            row.names = F,
+            col.names=F)
+```
+
+After you’ve written this file out, use FileZilla to transfer all your new files over to the server and into your ~/myresults/ANGSD folder.
+
+### Running the GEA to test which outlier loci are associated with climate
+Since we are running the GEA analysis on just our oultiers (=candidates for selection), it will be pretty fast! One can also run a genome-wide GEA, which takes much longer…but doable for future studies ;)
+
+We’ll use ANGSD again to test for associations between allele frequencies and the bioclim variables while using genotype likelihoods to account for uncertainty. The ANGSD routine we’ll use is called doAsso which stands for “do Association”. It has it’s own manual page on ANGSD’s website
+
+ANGSD doAsso requires genotype probabilities (yes, these are slightly different mathematical than genotype likelihoods), which means we’ll need to call the initial set of ANGSD commands to import the bam’s and filter them before sending the probabilities to the doAsso function.
+
+```
+# your usual bash header
+
+# add some notes
+
+
+REF="/netfiles/ecogen/PopulationGenomics/ref_genome/Pabies1.0-genome_reduced.fa"
+
+SUFFIX="allRS"
+
+# Let's start with bio10; can do others as time permits...
+BIOVAR=""
+
+# path to the red spruce bam files
+INPUT="/netfiles/ecogen/PopulationGenomics/fastq/red_spruce/cleanreads/bam"
+
+OUTPUT=
+
+# make the bamlist files
+ls ${INPUT}/*sorted.rmdup.bam >${OUTPUT}/${SUFFIX}_bam.list
+
+
+# Run ANGSD to estimate the genotype probabilities and perform the GEA:
+
+ANGSD -b ${OUTPUT}/${SUFFIX}_bam.list \
+-ref ${REF} -anc ${REF} \
+-out ${OUTPUT}/${SUFFIX}_${BIOVAR} \
+-nThreads 1 \
+-remove_bads 1 \
+-C 50 \
+-baq 1 \
+-minMapQ 20 \
+-minQ 20 \
+-GL 1 \
+-doCounts 1 \
+-minInd 47 \
+-setMinDepthInd 1 \
+-setMaxDepthInd 40 \
+-skipTriallelic 1 \
+-doMajorMinor 1 \
+-doMaf 1 \
+-SNP_pval 1e-6 \
+-minMaf 0.05 \
+-doPost 1 \
+-doAsso 5 \
+-yQuant ${OUTPUT}/allRS_${BIOVAR}.txt \
+-rf ${OUTPUT}/${SUFFIX}_outliers_PC1.txt \
+-cov ${OUTPUT}/${SUFFIX}_genPC1_2.txt
+```
+
+
+That’s a lot of options for ANGSD!
+
+Most of these are identical to what I used for calling the genotype likelihoods (beagle files) that we used as input into pcANGSD. But I wanted to give you all the options and their meaning (see also the ANGSD manual online so you could have them in case you need to change anything.
+
+Those last 5 lines are the important part for the GEA:
+
+Code option	Meaning
+doPost 1	compute genotype probabilities
+doAsso 5	perform the GEA association test
+-yQuant	the input environmental variable to test (can only test 1 env at a time)
+rf	the list of outlier loci to test, in chromosome:position format
+-cov	the list of covariates, in this case, the genetic PC axes describing the pop structure
+You’ll also notice that we do this just on loci that are present in at least 5% frequency across the entire set of samples (-minMaf 0.05)
+
+Save your script as ANGSD_GEA.sh
+
+It will run fast, so probably you don’t need a tmux session.
+
+The results will be stored in a file called: allRS_poly_bioXX.lrt0.gz where “bioXX is the climate variable you supplied to ${BIOVAR} in the script.
+
+If we peek inside this file, you’ll see something like this:
+
+```zcat allRS_poly_bio10.lrt0.gz | head```
+
+Chromosome  Position    Major   Minor   Frequency   N   LRTscore    high_WT/HE/HO   LRTem   beta    SE  emIter
+MA_65255    1119    G   A   0.143663    95  -999.000000 10/1/0  nan nan nan 0
+MA_9957507  2373    G   T   0.118974    95  -999.000000 12/2/0  nan nan nan 0
+MA_10429602 2561    T   C   0.170879    95  -999.000000 20/4/0  nan nan nan 0
+MA_10429602 2590    A   G   0.121700    95  -999.000000 15/0/0  nan nan nan 0
+MA_10430260 11653   T   C   0.096735    95  -999.000000 64/4/0  nan nan nan 0
+MA_1135 12714   C   A   0.300374    95  0.040177    14/15/2 nan nan nan 0
+MA_8953275  2254    T   A   0.254357    95  -999.000000 3/2/6   nan nan nan 0
+MA_10435716 4986    T   C   0.182536    95  -999.000000 1/3/0   nan nan nan 0
+MA_593911   2820    A   G   0.058739    95  -999.000000 82/4/0  nan nan nan 0
+The first 6 columns should be mostly self-explanatory by now. The later columns mean:
+
+Column	Meaning
+LRTscore	Likelihood Ratio Test (LRT) of whether the SNP is associated with climate
+high_WT/HE/HO	The counts of homozygous (wildtype):heterozygous:homozygous genotypes
+LRTem	Another version of the likelihood ratio test (this is the one used to compute significance)
+beta	The slope of minor allele frequencies along the climate gradient
+SE	The standard error of the slope
+emIter	Number of iterations of the EM algorithm used to test for significance in the GEA
+You’ll notice that most (maybe all?) of the head on this file has lots of ‘nan’. That means those SNPs were not significant (i.e., had no significant association between allele frequencies and the climate gradient).
+
+We can quickly find the loci that ARE signficant by doing an “inverted” grep search that finds all the lines in the file that DON’T have a match to your search term. Clever, eh?
+
+```zcat allRS_poly_bio10.lrt0.gz | grep -v "nan" | head```
+
+Chromosome  Position    Major   Minor   Frequency   N   LRTscore    high_WT/HE/HO   LRTem   beta    SE  emIter
+MA_122595   9205    G   A   0.178944    95  4.075774    41/11/05.321326 -0.640934   0.249910    23
+MA_5911667  371 A   G   0.221774    95  8.997344    25/15/011.085109    -0.765536   0.196047    18
+MA_118138   1326    T   C   0.213717    95  6.004392    47/13/25.974007 0.399418    0.214912    2
+MA_472677   1618    A   C   0.131357    95  5.845219    65/13/05.833940 0.568727    0.329935    2
+MA_305431   2240    A   C   0.171533    95  6.603277    52/11/06.529913 0.504134    0.298265    2
+MA_42276    14661   G   A   0.199746    95  11.767473   29/13/014.041176    -0.881066   0.177973    26
+MA_2314 6247    T   A   0.202935    95  9.714111    33/12/0 10.471330   -0.625151   0.171075    9
+How many significant loci? (Hint: remove the ‘head’ command and pipe to a different command that counts lines in the file)
+
+Do the allele frequencies seem to consistently have positive or negative slopes? What does that mean for the climate gradient you tested?
+
+You could find out what genes and their function are associated with this set of loci using the code we developed at the end of Day 7. (Hint: Here, you’d be cutting out the first column containing the contig info and using that to grep out the genes from the reference genome annotation. This could then be used at plantgenie.org to look at gene annotationa and function!)
+
+### Structural variation in purple sea urchins
+
+### Structural variation in purple sea urchins
+Background
+What is structural variation?
+The types of genomic structural variations (SVs) are:
+
+deletions
+
+insertions
+
+duplications
+
+inversions
+
+translocations
+
+, of at least 50 bp in size. Small variants, variants that are less than 50bp in length (single nucleotide variants (SNVs) and short insertions, and deletions (indels)), are often considered separately because then are the result of other mechanisms. Invertions and translocations are called balanced forms, while deletions, insertions, and duplications are imbalanced forms that are commonly also referred to as copy number variations.
+
+Structural variants can result from a range of mutational mechanisms, like DNA recombination-, replication- and repair-associated processes. Here is a figure summarising these processes1: https://www.ncbi.nlm.nih.gov/core/lw/2.0/html/tileshop_pmc/tileshop_pmc_inline.html?title=Click%20on%20image%20to%20zoom&p=PMC3&id=3665418_nihms456963f1.jpg
+
+### Why are structural variants interesting?
+More and more studies are being published showing that SVs are an important source of genetic diversity in humans and primates (species we have the most sequence data for), contributing to their evolution. Surprisingly, it was reported that genomic differences caused by SVs are 2 to 10 times higher than differences cause by single nucleotide variants (SNVs) between human individuals. It has also been hypothesized that SVs could have a higher impact on phenotypic changes than SNVs. Given these new discoveries it is unsurprising that a lot of human diseases, including neurodevelopmental disorders and cancers, have recently been associated with SVs.2
+
+### Methods for detecting SVs
+There are two main methods for detecting SVs:3
+
+Array-based detection - such as microarray comparative genome hybridization (array CGH)
+Pros:
+high-throughput analysis
+time and money efficient
+Cons:
+they only detect certain types of SVs
+lower sensitivity for small SVs
+lower resolution for determining breakpoints (BPs)
+Sequencing-based computational methods
+Pros:
+can detect a range of SV types
+higher resolution
+Cons:
+more expensive
+high rate of miscalling of SVs (errors in base call, alignment, or de novo assembly)
+especially in repetitive regions (though this can be overcome by long read sequencing)
+Main computational approaches:
+
+Read pairs (PEM)
+
+Read depth
+
+Split read
+
+Studies investigating structural variation usually use a combination of the above mentioned approaches.
+
+Uses paired-end sequencing. After the reads are mapped to the reference genome, “pairs mapping at a distance that is substantially different from the expected length, or with anomalous orientation, suggest structural variants.”4 See image below.
+
+
+More reads mapped -> duplication, less reads mapped -> deletion.
+
+Only half of the read maps.
+
+### Local PCA
+Today, we will be using a fourth method to find large inversions and to explore the structure of genetic variation in sea urchin populations in general. We are going to be using a package developed for this purpose; called local PCA. Essentially, what it does is that it creates a PCA for each genomic window (width specified by the user) in our dataset, then it creates a super PCA (well, multidimensional scaling (MDS) which is kind of the same thing) of those PCAs. Finally, it identifies a subset of windows that cluster together in the super PCA. Here is the paper describing the method: https://academic.oup.com/genetics/article/211/1/289/5931130?login=true. Using these results, we will identify some putative inversions and look at GO enrichment of genes that fall into those subsets of windows identified by local PCA.
+
+Here is a visual representation of the workflow from the paper:
+
+
+
+Example results with known inversions:
+
+
+
+In a nutshell, this pattern comes to be because the rate of recombination in the inverted region is reduced. Therefore, SNPs that were together prior to inversion stay together, even as the genetic variation changes due to recombination outside of the inverted region.
+
+Imagine a mother that gets an original inversion in a germline cell through some mutational mechanism. When that copy pairs up during recombination, the inverted region won’t recombine. Thus, whatever combination of SNPs happened to be in that region gets “preserved”. In the end, if this inversion spreads in the population, every individual will one of the 3 possible genotypes:
+
+Be a homozygote to the inversion and thus to that specific combination of SNPs.
+
+Be homozygote without an inversion and thus have a diverse set of SNPs in that region.
+
+Be a heterozygote and have a copy which is inverted and a copy that is not inverted.
+
+Thus, if we were to make a PCA with the SNPs that are in that inverted region, we would get a figure such as this:5
+
+
+
+Where the number of points in each group will depend on how many individuals there are in the population for each of the above categories.
+
+On the other hand, if we make a PCA with SNPs outside of this region, the pattern will likely be different, as individuals will cluster differently on the PCA. That is why you can see windows that plot similarly on a PCA within the inverted region on the figure above (the second figure in this section).
+
+### The dataset
+The paper describing the urchin dataset that we will be analyzing is available here: https://www.journals.uchicago.edu/doi/10.1086/726013
+
+We collected, shipped, extracted DNA, and sequenced the whole genomes of 140 purple sea urchins (Strongylocentrotus purpuratus), 20 from each of seven sites (figure below). Coordinates for collection sites were chosen on the basis of pH data collected by autonomous pH sensors mounted submerged in the water at ecologically relevant depth for this sea urchin species. Paired-end sequencing using NovaSeq S2 Flow Cell 150 × 150 bp on a single lane resulted in high-quality reads, such that no trimming was necessary.
+
+
+
+Relevant results:
+
+High genetic diversity
+
+No overall population structure due to high gene flow
+
+
+
+Steps already completed
+The following steps are already completed for you, you will not need to run any of this (mapping and variant calling).
+
+### Mapped reads to the reference
+The reference genome
+https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000002235.5/
+
+N50: 37.3 Mb
+
+“Length of the shortest contig for which longer and equal length contigs cover at least 50 % of the assembly”.
+
+21_scaffolds file in the /netfiles/ecogen/structural_variation/
+
+###The mapping algorythm
+Input: List of read files (R1 and R2)
+```
+while read line ; do
+        F1=$(cut -d ' ' -f1 <<< $line)
+        F2=$(cut -d ' ' -f2 <<< $line)
+        echo "$F1 -- $F2"
+        FILE=$(mktemp)
+        cat header.txt >> $FILE
+        echo "spack load samtools@1.10" >> $FILE
+        echo "spack load bwa@0.7.17" >> $FILE
+        ref="/users/c/p/cpetak/WGS/reference_genome/GCF_000002235.5_Spur_5.0_genomic.fna"
+        out_name=$(cut -d '.' -f1 <<< $F1)
+        echo "bwa mem -t 1 -M $ref /users/c/p/cpetak/WGS/all_fastqs/$F1 /users/c/p/cpetak/WGS/all_fastqs/$F2 | samtools view -S -b > /users/c/p/cpetak/WGS/BWA_out/$out_name.bam" >> $FILE
+        sbatch $FILE
+        sleep 0.5
+        rm $FILE
+done < $1
+```
+The Burrows-Wheeler Alignment Tool (BWA) MEM algorithm was used for mapping the raw reads to the S. purpuratus reference genome (Spur ver. 5.0, scaffold N50 ∼37 Mbp). The average coverage for each individual was 6.42±0.78, with an average mapping rate of 81.6±0.01.
+
+### Called variants for each chromosome across all individuals
+Input:
+
+21_scaffolds
+
+list_of_files.txt, 140 lines, line 1: /users/c/p/cpetak/WGS/BWA_out/BOD_18170X61_200925_A00421_0244_AHKML5DSXY_S81_L002_R1_001.rmdup.bam
+```
+while read line ; do
+    echo "$line"
+    FILE=$(mktemp)
+  cat header.txt >> $FILE
+  ref="/users/c/p/cpetak/WGS/reference_genome/GCF_000002235.5_Spur_5.0_genomic.fna"
+  echo "echo "${line}" " >> $FILE
+  echo "bcftools mpileup -r $line -f $ref --bam-list list_of_files.txt | bcftools call -mv -Ob -o multi_bam_${line}.bcf" >> $FILE
+  sbatch $FILE
+  sleep 0.5
+  rm $FILE
+done < $1
+```
+
+Output: bcf files in the /netfiles/ecogen/structural_variation/bcf_files directory
+
+Filtering the bcf files
+Before we do anything else, let’s filter these bcf files. In order to look at them we will convert them into a vcf format shortly.
+
+List of chromosomes to choose from:
+1. NW_022145594.1
+2. NW_022145595.1
+3. NW_022145596.1
+4. NW_022145597.1
+5. NW_022145598.1
+6. NW_022145601.1
+7. NW_022145602.1
+8. NW_022145603.1 # Csenge
+9. NW_022145604.1
+10. NW_022145605.1
+11. NW_022145606.1
+12. NW_022145610.1
+13. NW_022145611.1
+14. NW_022145612.1
+15. NW_022145613.1
+16. NW_022145614.1
+17. NW_022145615.1
+Copy files you will be working with
+Make a new directory in ~/mydata called str_data (use the mkdir command)
+
+Do the following in tmux as it could take some time for the copying to finish.
+
+Copy your bcf file into that new directory. You can do this by typing the following, and replacing the chromosome number with YOURS: cp /netfiles/ecogen/structural_variation/bcf_files/multi_bam_mychromosome.bcf ~/mydata/str_data
+
+Check that you have the data you’ll need in ~/mydata/str_data, a multi_bam_mychromosome.bcf file.
+
+### Write a bash script to do the filtering for your chromosome
+cd into your myscripts directory, cd ~/myscripts
+
+type vim filter_chromosome.sh, then hit the “i” key to enter insert mode
+
+copy the following lines:
+
+```
+#!/bin/sh
+
+mychr="NW_022145603.1" # Replace this with your chromosome
+
+# use bcftools to filter your chromosome. The output of this line will be a vcf file that we can look at
+
+bcftools view -e 'QUAL <= 40 || DP < 560 || MQB < -3 || RPB < -3 || RPB > 3 || AN < 238' ~/mydata/str_data/multi_bam_${mychr}.bcf > ~/mydata/str_data/${mychr}_filtered.vcf
+
+echo "Filtered bcf" # Some printing to keep track of progress
+
+# Convert the filtered vcf into the bcf file type which is the type the R package will be expecting
+
+bcftools view -Ob ~/mydata/str_data/${mychr}_filtered.vcf > ~/mydata/str_data/${mychr}_filtered.bcf
+
+echo "Converted to bcf" # Some printing to keep track of progress
+
+# Index the filtered bcf file. This will make the file more searchable by the algorythm reading it.
+
+bcftools index ~/mydata/str_data/${mychr}_filtered.bcf
+echo "Indexed bcf"
+echo "Done!"
+```
+
+Hit esc, then type :wq
+
+### A bit on tmux
+Before running the script above in tmux, I wanted to go over how to use tmux in a few minutes.
+
+Tmux is a great package that allows you to switch easily between several programs in one terminal, detach them (they keep running in the background) and reattach them when you want to look at it again.
+
+When you type tmux and hit enter, you create a new session that you can detach from using Ctrl B + D. However, if you type tmux again in the future, you will again create a new session instead of opening the previous one. If you do this repeatedly, you will end up creating a lot of sessions in the background at the same time. In order to be able to navigate back to a specific session later, you should instead type:
+
+tmux new -s mysession where mysession is the name of your session. So, for example now you can type:
+
+tmux new -s bcf_filtering. Then you can list the sessions you are currently running with
+
+tmux ls. If you see a lot of sessions being printed to the screen and you want to get rid of them all, type
+
+tmux kill-session. Great! Now that your tmux is all clean, let’s create a new session again named bcf_filtering:
+
+tmux new -s bcf_filtering. Hit Enter. Type Ctrl B + D. Since we named it, you can open the same session again:
+
+tmux attach-session -t bcf_filtering. Yay! Now run the filtering script by typing bash filter_chromosome.sh. The code should complete in 6 minutes. Hit Ctrl B + D to detach the session. If you want to look at the progress, you can type tmux attach-session -t bcf_filtering again!
+
+### The vcf file format
+
+While the filtering is running, let’s look at the vcf file that we are creating in the process. I have an example for you ready in /netfiles/ecogen/structural_variation/examples. Go ahead and cd into it. DO NOT try to open the vcf file with vim, it WILL crush your computer :). Instead, type head NW_022145602.1_filtered.vcf to print the first 10 lines.
+
+VCF, variant call format, is an extremely common, standardized file format to store genetic information in. It always starts with a few (or many in our case) header lines that start with ##. These header lines contain information about how the vcf file was generated, followed by information about the reference. Go ahead and type more NW_022145602.1_filtered.vcf and hit Enter. The more command is similar to the head command, but it allows you to move down in the file by hitting Enter. You will see that we have a lot of scaffolds listed in this file, so instead of hitting and infinite amount of Enters, hit Ctrl C to exit the more command, and then type more -900 NW_022145602.1_filtered.vcf to jump to line 900. After all the scaffold information, you will see a description of what the different sections in the INFO column in the vcf file mean. I decided to filter on:
+
+DP, which is Raw read depth, across all individuals (so 560 reads is 4 depth on average among 140 individuals)
+
+MQB, Mann-Whitney U test of Mapping Quality Bias, “If p < 0.05, it suggests there is significant bias i.e. the reads supporting alternate allele have lower mapping quality than reads supporting reference allele. The bigger p value is better.”
+
+RPB, Mann-Whitney U test of Read Position Bias, “alleles present at the end of reads may not be right”.
+
+AN, Total number of alleles in called genotypes, we have a total of 2 (heterozygote) x 140 (number of individuals) alleles. 85% is my cut off.
+
+I decided on these values based on similar literature I found, and also the percent data loss after applying different levels of filtering.
+
+Now let’s look further down in the file. You should see a header line that lists the column names:
+
+#CHROM POS ID REF ALT QUAL FILTER INFO FORMAT followed by a 140 long names. This is a standard format. Keep pressing enter until you find the first line.
+
+CHROM is the chromosome name
+
+POS is the position in the chromosome
+
+ID can be an ID assigned to the specific variant. In some model organisms, like humans, there are known named variants. That information would go here. If you are curious, you can browse those here: https://www.ncbi.nlm.nih.gov/variation/view/
+
+REF allele in the reference
+
+ALT allele in your dataset
+
+QUAL posterior genotype probability in Phred scale. QUAL = 20 means there is 99% probability that there is a variant at the site. I decided to filter out sites with QUAL <= 40.
+
+FILTER If all filters are passed, PASS is written in the filter column. These are default filters during the variant calling, takes depth of coverage, genotyping quality and variant quality into account.
+
+INFO Some information about the variant, see description in the vcf file header lines I mentioned above.
+
+FORMAT Specifies the format in which the genotype data is given. In this case, it is GT:PL. GT - Genotype, PL - List of Phred-scaled genotype likelihoods.
+
+Let’s look at an example!
+
+Example 1:
+
+NW_022145602.1  1564    .   T   A   129 .   DP=599;VDB=0.259328;SGB=31.2596;RPB=0.70951;MQB=0.816143;MQSB=0.0194;BQB=0.892443;MQ0F=0.358932;ICB=0.000506821;HOB=0.000246914;AC=3;AN=270;DP4=385,98,11,1;MQ=21   GT:PL   ./.:0,0,0   0/0:0,12,76 0/0:0,6,74  0/0:0,15,118    0/0:0,3,4   0/1:31,0,28 0/0:0,9,40  0/0:0,6,7 0/0:0,6,42    0/0:0,12,11 0/0:0,3,4   0/0:0,3,37  0/0:0,21,171    0/0:0,3,4   ./.:0,0,0   0/0:0,15,69 0/0:0,15,41 0/0:0,24,99 0/0:0,6,67  0/
+0:0,12,77   0/0:0,15,120    0/0:0,15,117    0/0:0,3,37  0/0:0,9,42  0/0:0,9,13  0/0:0,21,98 0/0:0,9,9   0/0:0,3,37  0/0:0,3,40  0/0:0,15,69 0/
+0:0,15,16   0/0:0,12,43 0/0:0,3,4   0/0:0,9,75  0/0:0,18,119    0/0:0,6,36  0/0:0,6,39  0/0:0,3,37  0/0:0,15,98 0/0:0,6,39  ./.:0,0,0   0/
+0:0,9,77    0/0:0,9,74  0/0:0,12,60 0/0:0,3,4   0/0:0,6,39  0/0:0,12,44 0/0:0,9,68  0/0:0,15,103    0/0:0,9,71  0/0:0,18,122    0/0:0,9,40  0/
+0:0,12,59   0/0:0,18,102    0/0:0,6,64  0/0:0,15,71 0/0:0,12,99 0/0:0,6,74  0/0:0,3,37  0/0:0,24,128    0/0:0,18,108    0/1:122,0,34 (...)
+0/0: homozygote to the alternative allele 0/1: heterozygote. since we don’t know which allele is coming from which parent, 0/1 just means heterozygote, and you won’t see 1/0 anywhere. 1/1: homozygote for the alternative allele
+
+The likelihood scores: “Scores for 0/0 (homozygous ref), 0/1 (heterozygous), and 1/1 (homozygous alt) genotypes. For a phred-scaled likelihood of P, the raw likelihood of that genotype L = 10^(-P/10) (so the higher the number, the less likely it is that your sample is that genotype). The sum of likelihoods is not necessarily 1.”
+
+NOTE: in module 1, population genetics on red spruce data, we were looking at SNP information at biallelic sites. As you can see if you scroll down, this dataset also includes sites with duplications/deletions/insertions, as well as triallelic (or even quadrallelic) sites.
+
+Example 2:
+
+NW_022145602.1  1553    .   ag  a,aGg   999 .   INDEL;IDV=7;IMF=0.7;DP=583;VDB=0.0245597;SGB=-53.7492;MQSB=0.0144647;MQ0F=
+0.447684;ICB=0.473584;HOB=0.0514945;AC=79,2;AN=274;DP4=286,108,161,28;MQ=20 GT:PL   0/0:0,3,4,3,4,4 0/0:0,5,57,9,60,57  0/0:0,9,42
+,9,42,42    0/1:26,0,1,44,10,35 0/0:0,3,4,3,4,4 0/0:0,12,69,12,69,69    0/1:25,5,0,28,9,25  0/1:7,5,0,10,9,7    1/1:39,6,0
+,39,6,39    0/0:0,15,12,15,12,12 (...) 1/1:21,8,0,24,12,21  0/0:0,18,33,12,36,33    0/0:0,6,34
+,6,34,34    0/1:6,0,69,15,72,81 0/1:3,0,25,18,31,35 0/1:55,5,0,61,12,56 0/0:0,9,87,9,87,87  0/0:0,15,60,15,60,60    0/
+0:0,3,3,6,6,4   0/0:0,3,4,3,4,4 1/1:48,9,0,57,21,49 0/1:16,0,3,22,9,24  1/1:52,6,0,52,6,52  0/0:0,21,81,21,81,81    0/1:0,0,16
+,6,25,21    0/0:0,9,61,9,61,61  0/1:27,0,42,36,51,74    0/1:44,0,26,59,32,77    0/1:14,0,30,23,33,50    0/1:20,3,0,20,3,20  1/
+1:72,12,0,72,12,72  0/1:23,3,0,29,9,25  0/0:0,12,13,12,13,13    0/1:26,5,0,29,9,26  0/0:0,9,21,9,21,21  0/1:3,3,0,6,6,4 0/
+0:0,15,65,15,65,65  0/0:0,5,58,9,61,58  0/0:0,9,15,9,15,15  0/0:0,3,4,3,4,4 0/1:48,0,16,54,28,70    0/0:0,1,22,3,25,24  0/
+1:11,2,0,17,6,14    1/2:89,62,59,30,0,22    0/1:50,3,0,53,6,51  0/0:0,6,8,6,8,8 0/0:0,3,31,3,31,31  0/0:0,9,37,9,37,37  0/
+0:0,15,109,15,109,109   0/1:17,0,78,35,81,108   0/0:0,2,78,12,81,85 0/1:47,0,56,59,69,110   1/1:68,6,0,68,6,68  0/0:0,9,55,9,55,55
+    0/0:0,9,65,9,65,65  0/1:2,0,1,14,4,12   0/0:0,9,71,9,71,71  1/1:99,18,0,99,18,99    0/2:62,71,94,0,36,27 (...)
+In this case, the reference is AG, the first alternative allele has a deletion of the G, and the second alternative allele has an addition of a G! So for example, 0/2 is a heterozygote where one copy has the insertion, and 1/1 is a homozygote for the deletion.
+
+### Running local PCA
+Local PCA is an R package, here is the GitHub page: https://github.com/petrelharp/local_pca. I already installed this package on the class server following the instructions in the README.md. You should be able to use it without doing anything.
+
+On the page, they also provide an Rscript to use the package and a separate one to visualise the results, which I copied to the server (and slightly modified): /netfiles/ecogen/structural_variation.
+
+Copy the R scripts over to your myscripts directory: cp /netfiles/ecogen/structural_variation/run_lostruct.R ~/myscripts and cp /netfiles/ecogen/structural_variation/summarize_run.Rmd ~/myscripts
+Let’s look at the scripts
+Type vim run_lostruct.R in the ~/myscripts directory.
+
+Run local PCA
+IMPORTANT: make sure to remove the original unfiltered bcf file from your ~/mydata/str_data directory, rm multi_bam_mychromosome.bcf, because the package will read all .bcf files in the directory that you give it and we only want to run the package on the filtered bcf file.
+
+```
+tmux new -s run_localPCA
+
+cd ~/mydata/str_data. 
+#This way the results will automatically end up in this directory.
+
+Rscript ~/myscripts/run_lostruct.R -i ~/mydata/str_data -t snp -s 1000 -I /netfiles/ecogen/structural_variation/sample_info.tsv 
+
+```
+We are running the Rscript with the “Rscript” command, just like we run the bash scripts with the “bash” command. -i specifies the input file location, -t specifies the way we are calculating the windows, which is based on SNPs for now. -s specifies the window size. -I specifies the location of the file I created to link the individual IDs in the bcf file with the 3 letter population name. This should take 15 minutes to an hour to run.
+
+Once the script finishes, you should have a folder called lostruct_results in ~/mydata/str_data. cd into lostruct_results. Then, cd into a folder called something like type_snp_size_1000_weights_none_jobid_166584 (will be called different for you). Type ll.
+
+Output files:
+
+config.json -> check with vim
+
+mds_coords.csv -> wc -l -> how many lines are there? each line corresponds to a window
+
+mychromosome.pca.csv -> wc -l to check the number of rows and awk -F',' '{print NF}' mychromosome.pca.csv | sort -nu | tail -n 1 to check the number of columns -> should be 283. For each window (rows), PC1 and PC2 for each individual (140) -> input variables for the MDS
+
+mychromosome.regions.csv -> windows information (will be important later)
+
+#### Visualise results
+NOTE: Make sure to change the type_snp_size_1000_weights_none_jobid_166584 directory name everywhere in this tutorial to your directory name!
+
+Now we’ll use another script provided by the local PCA package to make an html with a series of plots.
+
+```
+tmux attach-session -t run_localPCA
+
+cd into ~/mydata/str_data/lostruct_results/type_snp_size_1000_weights_none_jobid_166584/
+
+ Rscript -e 'templater::render_template("~/myscripts/summarize_run.Rmd",output="~/mydata/str_data/lostruct_results/type_snp_size_1000_weights_none_jobid_166584/run_summary.html",change.rootdir=TRUE)'
+
+#This should only take a few minutes. Once done, you should have new files in your type_snp_size_1000_weights_none_jobid_166584 directory.
+
+#Open FileZilla on your computer. Move run_summary.html in the ~/mydata/str_data/lostruct_results/type_snp_size_1000_weights_none_jobid_166584 directory to your computer.
+```
+
+Find that file on your computer and open it in your favorite browser (e.g. Chrome).
+
+### Select regions of interest
+In order to be able to get the genomic regions corresponding to a specific corner in the MDS plot, we will need to modify the plotting script (summarize_run.Rmd) such that it writes a csv file with the coordinates.
+```
+cd ~/myscripts, vim summarize_run.Rmd, hit I to enter the insert mode.
+
+#Around line 195, the script creates a variable called corner.regions based on the mds corners. This variable contains a list of chromosome, start, end information for each window in each corners of the mds plot. So, all we need to do is insert a line write.csv(corner.regions[[1]], "first_corner.csv", row.names=FALSE) under the line 198 (}) to save the genomic regions in the first corner.
+
+#Hit esc and :wq to save your changes.
+
+#Repeat steps above to rerun the plotting.
+
+tmux attach-session -t run_localPCA
+
+cd into ~/mydata/str_data/lostruct_results/type_snp_size_1000_weights_none_jobid_166584/
+
+type Rscript -e 'templater::render_template("~/myscripts/summarize_run.Rmd",output="~/mydata/str_data/lostruct_results/type_snp_size_1000_weights_none_jobid_166584/run_summary.html",change.rootdir=TRUE)'
+```
+
+Now you should have a new file in type_snp_size_1000_weights_none_jobid_166584 called first_corner.csv. Type head first_corner.csv to see the region information. NOTE: if you are not seeing the new file appear, you might have to delete the cache directory (rm -r cache) first, and then rerun the Rscript again.
+
+### Do GO Enrichment for the selected corner
+In order to get a list of genes that are present in the selected windows, we will use an annotation file from ncbi: https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000002235.5/. GFF is a standard file format to store genomic annotation information in. I have already downloaded this file and moved it to 
+```
+/netfiles/ecogen/structural_variation/, and named it genome_annotation.gff.
+
+#Copy this file into your directory, cp /netfiles/ecogen/structural_variation/genome_annotation.gff ~/mydata/str_data/lostruct_results/type_snp_size_1000_weights_none_jobid_166584 Let’s take a look!
+
+#To find an intersect between genes specified in the GFF file and coordinates in our first_corner.csv, we will use a package called bedtools. I have already installed this package for you. The intersectBed algorithm requires the first_corner.csv to be in a specific format (tab delimited, chromosome, start, end), so we’ll need to modify it.
+
+cd ~/mydata/str_data/lostruct_results/type_snp_size_1000_weights_none_jobid_166584 if you are not there alread.
+
+
+head first_corner.csv ->
+```
+"chrom","start","end","pos"
+"NW_022145602.1",227538,246919,237228.5
+"NW_022145602.1",246921,249982,248451.5
+"NW_022145602.1",250053,258244,254148.5
+"NW_022145602.1",268365,272067,270216
+"NW_022145602.1",283027,289393,286210
+Remove 4th column: ```cut -d, -f1-3 first_corner.csv > first_corner_formatted.csv ->```
+"chrom","start","end"
+"NW_022145602.1",227538,246919
+"NW_022145602.1",246921,249982
+"NW_022145602.1",250053,258244
+"NW_022145602.1",268365,272067
+Remove “s: ```sed -i 's/"//g' first_corner_formatted.csv```
+
+Replace commas with tabs: ```sed -i 's/,/\t/g' first_corner_formatted.csv ->```
+
+chrom   start   end
+NW_022145602.1  227538  246919
+NW_022145602.1  246921  249982
+NW_022145602.1  250053  258244
+NW_022145602.1  268365  272067
+Now that we have the correct file format, let’s run the intersectBed algorythm: ```/netfiles/ecogen/structural_variation/bedtools2/bin/intersectBed -a first_corner_formatted.csv -b genome_annotation.gff -wa -wb > genes_first_corner.bed Look at the genes_first_corner.bed file.```
+
+To extract the gene names: ```sed -n "s/^.*gene=\(LOC[0-9]\+\).*$/\1/p" genes_first_corner.bed > gene_names_first_corner.txt```
+
+You’ll see that a lot of the gene names are repeated. To discard repeats, type: ```sort gene_names_first_corner.txt | uniq > uni_gene_names_first_corner.txt```
+
+Go to FileZilla on your computer and download this file (mydata/str_data/lostruct_results/type_snp_size_1000_weights_none_jobid_166584/uni_gene_names_first_corner.txt).
+
+Now we can run a gene ontology analysis on these genes!
+
+Open the txt file above, select all, copy (Ctrl C).
+
+Go to: https://geneontology.org/, paste the LOC names into the window on the right.
+
+Select Strongylocentrotus purpuratus (purple sea urchin) from the drop down menu instead of Homo sapiens. Click Launch.
+
+If you don’t get any significantly enriched biological processes, you can change the Annotation Data Set in the drop down menu and click Launch analysis. You can also play around with the Test type and the correction method. Don’t worry if you still don’t get anything, that is also a valid result!
+
+Congrats! You are all done with this tutorial! :)
+
+### References:
+
+Currall, B. B., Chiangmai, C., Talkowski, M. E., & Morton, C. C. (2013). Mechanisms for structural variation in the human genome. Current genetic medicine reports, 1, 81-90.↩︎
+
+Soto, D. C., Uribe‐Salazar, J. M., Shew, C. J., Sekar, A., McGinty, S. P., & Dennis, M. Y. (2023). Genomic structural variation: A complex but important driver of human evolution. American Journal of Biological Anthropology.↩︎
+
+Kosugi, S., Momozawa, Y., Liu, X., Terao, C., Kubo, M., & Kamatani, Y. (2019). Comprehensive evaluation of structural variation detection algorithms for whole genome sequencing. Genome biology, 20, 1-18.↩︎
+
+Medvedev, P., Stanciu, M., & Brudno, M. (2009). Computational methods for discovering structural variation with next-generation sequencing. Nature methods, 6(Suppl 11), S13-S20.↩︎
+
+Ma, J., & Amos, C. I. (2012). Investigation of inversion polymorphisms in the human genome using principal components analysis. PloS one, 7(7), e40224.↩︎
